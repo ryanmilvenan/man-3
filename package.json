@@ -1,0 +1,36 @@
+{
+  "name": "man-3",
+  "version": "1.0.0",
+  "description": "A third generation homepage for news reading",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "build": "webpack",
+    "start": "node svr/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ryanmilvenan/man-3.git"
+  },
+  "author": "Ryan Milvenan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ryanmilvenan/man-3/issues"
+  },
+  "homepage": "https://github.com/ryanmilvenan/man-3#readme",
+  "dependencies": {
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-redux": "^5.0.2",
+    "redux": "^3.6.0"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-react": "^6.22.0",
+    "babel-preset-stage-0": "^6.22.0",
+    "babel-register": "^6.22.0",
+    "express": "^4.14.0",
+    "webpack": "v2.2.0",
+    "webpack-universal-middleware": "^1.0.0"
+  }
+}
