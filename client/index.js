@@ -1,16 +1,14 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
-import Root from '../common/containers/Root';
-
+import configureStore from '../common/store/configureStore.js'
+import Root from '../common/components/Root';
 
 const preloadedState = window.__PRELOADED_STATE__;
 const store = configureStore(preloadedState);
 const rootElement = document.getElementById('root');
 
 render(
-  <Provider store={store}>
-    <Root />
-  </Provider>,
+  <Root store={store} />,
   rootElement
 )

@@ -1,28 +1,25 @@
 import React from 'react';
 import { renderToString } from 'react-dom/server'
-import { Provider, createStore } from 'react-redux';
-import Root from '../common/containers/Root.js';
+import { Provider } from 'react-redux';
+import configureStore from '../common/store/configureStore.js'
+import Root from '../common/components/Root.js';
 
-export function handleRender(req, res) {
-  const store = createStore({})
-
-  const html = renderToString(
-    <Provider store={store}>
-      <Root />
-    </Provider>
-  )
-
+export default function handleRender(req, res) {
+  const store = configureStore()
   const preloadedState = store.getState()
 
+  const html = renderToString(
+    <Root store={store} />
+  )
   res.send(renderFullPage(html, preloadedState))
 }
 
-export function renderFullPage(html, preloadedState) {
+function renderFullPage(html, preloadedState) {
   return `
     <!doctype html>
     <html>
       <head>
-        <title>Redux Universal Example</title>
+        <title>Carnival In Paradise</title>
       </head>
       <body>
         <div id="root">${html}</div>

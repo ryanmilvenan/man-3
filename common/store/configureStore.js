@@ -1,17 +1,12 @@
 import { createStore } from 'redux';
+import rootReducer from '../reducers/index.js';
 
-const configureStore = (preloadedState) => {
+export default function configureStore(preloadedState) {
   const store = createStore(
     rootReducer,
-    preloadedState
+    preloadedState,
   )
 
-  if (module.hot) {
-    module.hot.accept('../reducers', () => {
-     const nextRootReducer = require('../reducers').default;
-     store.replaceReducer(nextRootReducer)
-    }
-  }
+  return store;
 }
 
-export default configureStore;
