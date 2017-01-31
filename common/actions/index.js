@@ -6,3 +6,10 @@ export const addNewsContainer = (url) => {
     url
   }
 }
+
+export const sendSocketMessage = (data) => {
+  return {
+    type: 'server:hello',
+    data
+  }
+}

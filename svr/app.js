@@ -28,6 +28,12 @@ server.listen(3000, () => {
 });
 
 io.on('connection', (socket) => {
-  console.log("CONNECTION RECEIVED");
-  socket.emit('server:connected', {hello: 'world'});
+  console.log("Socket connected:", socket.id);
+  socket.on('action', (action) => {
+    console.log("ACTION RECEIVED");
+    if(action.type == 'server/hello') {
+      console.log("GOT DATA:", action.data);
+      socket.emit('action', {type: 'message', data: 'from the server'});
+    }
+  })
 });

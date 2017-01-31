@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { addNewsContainer } from '../actions'
+import { addNewsContainer, sendSocketMessage } from '../actions'
 
 let AddNewsContainer = ({ dispatch }) => {
   let input
@@ -12,7 +12,8 @@ let AddNewsContainer = ({ dispatch }) => {
         if (!input.value.trim()) {
           return
         }
-        dispatch(addNewsContainer(input.value))
+        //dispatch(addNewsContainer(input.value))
+        dispatch(sendSocketMessage(input.value))
         input.value = ''
       }}>
         <input ref={node => {
