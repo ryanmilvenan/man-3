@@ -26,7 +26,7 @@ if(process.env.NODE_ENV !== 'production') {
     noInfo: true, publicPath: config.output.publicPath
   }));
   app.use(webpackHotMiddleware(compiler));
-  app.use(express.static(path.resolve(__dirname, '../dev_build')));
+  app.use(express.static(path.resolve(__dirname, '../dev_tools')));
 } else {
   app.use(express.static(path.resolve(__dirname, '../build')));
   app.use(handleRender);

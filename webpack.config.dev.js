@@ -4,8 +4,7 @@ const path = require('path');
 const webpack = require('webpack');
 
 const PATHS = {
-  dev: path.resolve(__dirname, 'dev_tools'),
-  out: path.resolve(__dirname, 'dev_build')
+  dev: path.resolve(__dirname, 'dev_tools')
 };
 
 module.exports = {
@@ -18,7 +17,7 @@ module.exports = {
       './index.dev.js',
     ],
     output: {
-      path: PATHS.out,
+      path: PATHS.dev,
       filename: 'client.bundle.js',
       publicPath: '/'
     },
