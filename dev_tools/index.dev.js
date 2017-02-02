@@ -5,7 +5,7 @@ import configureStore from './configureStore.dev.js'
 import Root from './Root.dev.js';
 import { AppContainer } from 'react-hot-loader';
 
-const preloadedState = window.__PRELOADED_STATE__;
+const preloadedState = window.__PRELOADED_STATE__ ? window.__PRELOADED_STATE__ : {};
 const store = configureStore(preloadedState);
 const rootElement = document.getElementById('root');
 

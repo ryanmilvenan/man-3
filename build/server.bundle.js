@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 12);
+/******/ 	return __webpack_require__(__webpack_require__.s = 14);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -89,16 +89,29 @@ module.exports = require("react-redux");
 exports.__esModule = true;
 exports.default = configureStore;
 
-var _redux = __webpack_require__(3);
+var _redux = __webpack_require__(5);
 
-var _index = __webpack_require__(10);
+var _reduxSocket = __webpack_require__(12);
+
+var _reduxSocket2 = _interopRequireDefault(_reduxSocket);
+
+var _socket = __webpack_require__(13);
+
+var _socket2 = _interopRequireDefault(_socket);
+
+var _index = __webpack_require__(11);
 
 var _index2 = _interopRequireDefault(_index);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var socket = (0, _socket2.default)('http://localhost:3000');
+var socketIoMiddleware = (0, _reduxSocket2.default)(socket, "SERVER:");
+
+var enhancer = (0, _redux.compose)((0, _redux.applyMiddleware)(socketIoMiddleware));
+
 function configureStore(preloadedState) {
-  var store = (0, _redux.createStore)(_index2.default, preloadedState);
+  var store = (0, _redux.createStore)(_index2.default, preloadedState, enhancer);
 
   return store;
 }
@@ -109,6 +122,12 @@ var _temp = function () {
     return;
   }
 
+  __REACT_HOT_LOADER__.register(socket, 'socket', '/Users/wind/Development/mangrove/man-3/common/store/configureStore.js');
+
+  __REACT_HOT_LOADER__.register(socketIoMiddleware, 'socketIoMiddleware', '/Users/wind/Development/mangrove/man-3/common/store/configureStore.js');
+
+  __REACT_HOT_LOADER__.register(enhancer, 'enhancer', '/Users/wind/Development/mangrove/man-3/common/store/configureStore.js');
+
   __REACT_HOT_LOADER__.register(configureStore, 'configureStore', '/Users/wind/Development/mangrove/man-3/common/store/configureStore.js');
 }();
 
@@ -116,12 +135,154 @@ var _temp = function () {
 
 /***/ }),
 /* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+var ADD_NEWS_CONTAINER = exports.ADD_NEWS_CONTAINER = 'NEWSCONTAINER:ADD_NEWS_CONTAINER';
+var DELETE_NEWS_CONTAINER = exports.DELETE_NEWS_CONTAINER = 'NEWSCONTAINER:DELETE_NEWS_CONTAINER';
+
+var nextNewsContainerId = 0;
+var NEWS_CONTAINER_ACTION_CREATORS = exports.NEWS_CONTAINER_ACTION_CREATORS = {
+  addNewsContainer: function addNewsContainer(url) {
+    return {
+      type: ADD_NEWS_CONTAINER,
+      id: nextNewsContainerId++,
+      url: url
+    };
+  },
+
+  deleteNewsContainer: function deleteNewsContainer(id) {
+    return {
+      type: DELETE_NEWS_CONTAINER,
+      id: id
+    };
+  }
+};
+
+var newsContainer = function newsContainer() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var action = arguments[1];
+
+  switch (action.type) {
+    case ADD_NEWS_CONTAINER:
+      return {
+        id: action.id,
+        url: action.url,
+        timeout: 1000
+      };
+    default:
+      return state;
+  }
+};
+
+var newsContainers = function newsContainers() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+  var action = arguments[1];
+
+  switch (action.type) {
+    case ADD_NEWS_CONTAINER:
+      return [].concat(state, [newsContainer(undefined, action)]);
+    case DELETE_NEWS_CONTAINER:
+      return state.filter(function (n) {
+        return n.id != action.id;
+      });
+    default:
+      return state;
+  }
+};
+
+var _default = newsContainers;
+exports.default = _default;
+;
+
+var _temp = function () {
+  if (typeof __REACT_HOT_LOADER__ === 'undefined') {
+    return;
+  }
+
+  __REACT_HOT_LOADER__.register(ADD_NEWS_CONTAINER, 'ADD_NEWS_CONTAINER', '/Users/wind/Development/mangrove/man-3/common/reducers/news_container_reducer.js');
+
+  __REACT_HOT_LOADER__.register(DELETE_NEWS_CONTAINER, 'DELETE_NEWS_CONTAINER', '/Users/wind/Development/mangrove/man-3/common/reducers/news_container_reducer.js');
+
+  __REACT_HOT_LOADER__.register(nextNewsContainerId, 'nextNewsContainerId', '/Users/wind/Development/mangrove/man-3/common/reducers/news_container_reducer.js');
+
+  __REACT_HOT_LOADER__.register(NEWS_CONTAINER_ACTION_CREATORS, 'NEWS_CONTAINER_ACTION_CREATORS', '/Users/wind/Development/mangrove/man-3/common/reducers/news_container_reducer.js');
+
+  __REACT_HOT_LOADER__.register(newsContainer, 'newsContainer', '/Users/wind/Development/mangrove/man-3/common/reducers/news_container_reducer.js');
+
+  __REACT_HOT_LOADER__.register(newsContainers, 'newsContainers', '/Users/wind/Development/mangrove/man-3/common/reducers/news_container_reducer.js');
+
+  __REACT_HOT_LOADER__.register(_default, 'default', '/Users/wind/Development/mangrove/man-3/common/reducers/news_container_reducer.js');
+}();
+
+;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+var REFRESH_SOURCE = exports.REFRESH_SOURCE = 'SERVER:REFRESH_SOURCE';
+var LATEST_DATA = exports.LATEST_DATA = 'CLIENT:SOURCE';
+
+var SOCKET_EVENTS_ACTION_CREATORS = exports.SOCKET_EVENTS_ACTION_CREATORS = {
+  refreshSource: function refreshSource(id, url) {
+    return {
+      type: REFRESH_SOURCE,
+      id: id,
+      url: url
+    };
+  }
+};
+
+var sources = function sources() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var action = arguments[1];
+
+  switch (action.type) {
+    case 'CLIENT:SOURCES':
+      return Object.assign({}, { source: action.data });
+    default:
+      return state;
+  }
+};
+
+var _default = sources;
+exports.default = _default;
+;
+
+var _temp = function () {
+  if (typeof __REACT_HOT_LOADER__ === 'undefined') {
+    return;
+  }
+
+  __REACT_HOT_LOADER__.register(REFRESH_SOURCE, 'REFRESH_SOURCE', '/Users/wind/Development/mangrove/man-3/common/reducers/socket_io_reducer.js');
+
+  __REACT_HOT_LOADER__.register(LATEST_DATA, 'LATEST_DATA', '/Users/wind/Development/mangrove/man-3/common/reducers/socket_io_reducer.js');
+
+  __REACT_HOT_LOADER__.register(SOCKET_EVENTS_ACTION_CREATORS, 'SOCKET_EVENTS_ACTION_CREATORS', '/Users/wind/Development/mangrove/man-3/common/reducers/socket_io_reducer.js');
+
+  __REACT_HOT_LOADER__.register(sources, 'sources', '/Users/wind/Development/mangrove/man-3/common/reducers/socket_io_reducer.js');
+
+  __REACT_HOT_LOADER__.register(_default, 'default', '/Users/wind/Development/mangrove/man-3/common/reducers/socket_io_reducer.js');
+}();
+
+;
+
+/***/ }),
+/* 5 */
 /***/ (function(module, exports) {
 
 module.exports = require("redux");
 
 /***/ }),
-/* 4 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -139,11 +300,11 @@ var _configureStore = __webpack_require__(2);
 
 var _configureStore2 = _interopRequireDefault(_configureStore);
 
-var _NewsStand = __webpack_require__(9);
+var _NewsStand = __webpack_require__(10);
 
 var _NewsStand2 = _interopRequireDefault(_NewsStand);
 
-var _AddNewsContainer = __webpack_require__(7);
+var _AddNewsContainer = __webpack_require__(8);
 
 var _AddNewsContainer2 = _interopRequireDefault(_AddNewsContainer);
 
@@ -184,152 +345,13 @@ var _temp = function () {
 ;
 
 /***/ }),
-/* 5 */
+/* 7 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-dom/server");
 
 /***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-var nextNewsContainerId = 0;
-var addNewsContainer = exports.addNewsContainer = function addNewsContainer(url) {
-  return {
-    type: 'ADD_NEWS_CONTAINER',
-    id: nextNewsContainerId++,
-    url: url
-  };
-};
-;
-
-var _temp = function () {
-  if (typeof __REACT_HOT_LOADER__ === 'undefined') {
-    return;
-  }
-
-  __REACT_HOT_LOADER__.register(nextNewsContainerId, 'nextNewsContainerId', '/Users/wind/Development/mangrove/man-3/common/actions/index.js');
-
-  __REACT_HOT_LOADER__.register(addNewsContainer, 'addNewsContainer', '/Users/wind/Development/mangrove/man-3/common/actions/index.js');
-}();
-
-;
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactRedux = __webpack_require__(1);
-
-var _actions = __webpack_require__(6);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var AddNewsContainer = function AddNewsContainer(_ref) {
-  var dispatch = _ref.dispatch;
-
-  var input = void 0;
-
-  return _react2.default.createElement(
-    'div',
-    null,
-    _react2.default.createElement(
-      'form',
-      { onSubmit: function onSubmit(e) {
-          e.preventDefault();
-          if (!input.value.trim()) {
-            return;
-          }
-          dispatch((0, _actions.addNewsContainer)(input.value));
-          input.value = '';
-        } },
-      _react2.default.createElement('input', { ref: function ref(node) {
-          input = node;
-        } }),
-      _react2.default.createElement(
-        'button',
-        { type: 'submit' },
-        'Add News Container'
-      )
-    )
-  );
-};
-AddNewsContainer = (0, _reactRedux.connect)()(AddNewsContainer);
-
-var _default = AddNewsContainer;
-exports.default = _default;
-;
-
-var _temp = function () {
-  if (typeof __REACT_HOT_LOADER__ === 'undefined') {
-    return;
-  }
-
-  __REACT_HOT_LOADER__.register(AddNewsContainer, 'AddNewsContainer', '/Users/wind/Development/mangrove/man-3/common/containers/AddNewsContainer.js');
-
-  __REACT_HOT_LOADER__.register(_default, 'default', '/Users/wind/Development/mangrove/man-3/common/containers/AddNewsContainer.js');
-}();
-
-;
-
-/***/ }),
 /* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var NewsContainer = function NewsContainer() {
-  return _react2.default.createElement(
-    'div',
-    null,
-    _react2.default.createElement(
-      'p',
-      null,
-      'News Container'
-    )
-  );
-};
-
-var _default = NewsContainer;
-exports.default = _default;
-;
-
-var _temp = function () {
-  if (typeof __REACT_HOT_LOADER__ === 'undefined') {
-    return;
-  }
-
-  __REACT_HOT_LOADER__.register(NewsContainer, 'NewsContainer', '/Users/wind/Development/mangrove/man-3/common/containers/NewsContainer.js');
-
-  __REACT_HOT_LOADER__.register(_default, 'default', '/Users/wind/Development/mangrove/man-3/common/containers/NewsContainer.js');
-}();
-
-;
-
-/***/ }),
-/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -345,7 +367,171 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(1);
 
-var _NewsContainer = __webpack_require__(8);
+var _news_container_reducer = __webpack_require__(3);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var AddNewsContainer = function AddNewsContainer(_ref) {
+  var dispatch = _ref.dispatch,
+      addNewsContainer = _ref.addNewsContainer;
+
+  var input = void 0;
+
+  return _react2.default.createElement(
+    'div',
+    null,
+    _react2.default.createElement(
+      'form',
+      { onSubmit: function onSubmit(e) {
+          e.preventDefault();
+          if (!input.value.trim()) {
+            return;
+          }
+          addNewsContainer(input.value);
+          input.value = '';
+        } },
+      _react2.default.createElement('input', { ref: function ref(node) {
+          input = node;
+        } }),
+      _react2.default.createElement(
+        'button',
+        { type: 'submit' },
+        'Add News Container'
+      )
+    )
+  );
+};
+
+AddNewsContainer.propTypes = {
+  AddNewsContainer: _react.PropTypes.func
+};
+
+var mapDispatchToProps = _extends({}, _news_container_reducer.NEWS_CONTAINER_ACTION_CREATORS);
+
+AddNewsContainer = (0, _reactRedux.connect)(undefined, mapDispatchToProps)(AddNewsContainer);
+
+var _default = AddNewsContainer;
+exports.default = _default;
+;
+
+var _temp = function () {
+  if (typeof __REACT_HOT_LOADER__ === 'undefined') {
+    return;
+  }
+
+  __REACT_HOT_LOADER__.register(AddNewsContainer, 'AddNewsContainer', '/Users/wind/Development/mangrove/man-3/common/containers/AddNewsContainer.js');
+
+  __REACT_HOT_LOADER__.register(mapDispatchToProps, 'mapDispatchToProps', '/Users/wind/Development/mangrove/man-3/common/containers/AddNewsContainer.js');
+
+  __REACT_HOT_LOADER__.register(_default, 'default', '/Users/wind/Development/mangrove/man-3/common/containers/AddNewsContainer.js');
+}();
+
+;
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.NewsContainer = undefined;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _socket_io_reducer = __webpack_require__(4);
+
+var _reactRedux = __webpack_require__(1);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var NewsContainer = exports.NewsContainer = function (_Component) {
+	_inherits(NewsContainer, _Component);
+
+	function NewsContainer() {
+		_classCallCheck(this, NewsContainer);
+
+		return _possibleConstructorReturn(this, _Component.apply(this, arguments));
+	}
+
+	NewsContainer.prototype.componentDidMount = function componentDidMount() {
+		setInterval(this.props.refreshSource, this.props.timeout, this.props.id, this.props.url);
+	};
+
+	NewsContainer.prototype.render = function render() {
+		return _react2.default.createElement(
+			'div',
+			null,
+			_react2.default.createElement(
+				'p',
+				null,
+				this.props.id
+			),
+			_react2.default.createElement(
+				'p',
+				null,
+				this.props.url
+			)
+		);
+	};
+
+	return NewsContainer;
+}(_react.Component);
+
+NewsContainer.propTypes = {
+	refreshSource: _react.PropTypes.func
+};
+
+var mapDispatchToProps = _extends({}, _socket_io_reducer.SOCKET_EVENTS_ACTION_CREATORS);
+
+var _default = (0, _reactRedux.connect)(undefined, mapDispatchToProps)(NewsContainer);
+
+exports.default = _default;
+;
+
+var _temp = function () {
+	if (typeof __REACT_HOT_LOADER__ === 'undefined') {
+		return;
+	}
+
+	__REACT_HOT_LOADER__.register(NewsContainer, 'NewsContainer', '/Users/wind/Development/mangrove/man-3/common/containers/NewsContainer.js');
+
+	__REACT_HOT_LOADER__.register(mapDispatchToProps, 'mapDispatchToProps', '/Users/wind/Development/mangrove/man-3/common/containers/NewsContainer.js');
+
+	__REACT_HOT_LOADER__.register(_default, 'default', '/Users/wind/Development/mangrove/man-3/common/containers/NewsContainer.js');
+}();
+
+;
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = __webpack_require__(1);
+
+var _NewsContainer = __webpack_require__(9);
 
 var _NewsContainer2 = _interopRequireDefault(_NewsContainer);
 
@@ -399,7 +585,7 @@ var _temp = function () {
 ;
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -407,15 +593,20 @@ var _temp = function () {
 
 exports.__esModule = true;
 
-var _redux = __webpack_require__(3);
+var _redux = __webpack_require__(5);
 
-var _news_container_reducer = __webpack_require__(11);
+var _news_container_reducer = __webpack_require__(3);
 
 var _news_container_reducer2 = _interopRequireDefault(_news_container_reducer);
+
+var _socket_io_reducer = __webpack_require__(4);
+
+var _socket_io_reducer2 = _interopRequireDefault(_socket_io_reducer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var rootReducer = (0, _redux.combineReducers)({
+  sources: _socket_io_reducer2.default,
   newsContainers: _news_container_reducer2.default
 });
 
@@ -436,61 +627,19 @@ var _temp = function () {
 ;
 
 /***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
+/* 12 */
+/***/ (function(module, exports) {
 
-"use strict";
-
-
-exports.__esModule = true;
-var newsContainer = function newsContainer() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  var action = arguments[1];
-
-  switch (action.type) {
-    case 'ADD_NEWS_CONTAINER':
-      return {
-        id: action.id,
-        url: action.url,
-        timeout: 1000 * 60 * 10
-      };
-    default:
-      return state;
-  }
-};
-
-var newsContainers = function newsContainers() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-  var action = arguments[1];
-
-  switch (action.type) {
-    case 'ADD_NEWS_CONTAINER':
-      return [].concat(state, [newsContainer(undefined, action)]);
-    default:
-      return state;
-  }
-};
-
-var _default = newsContainers;
-exports.default = _default;
-;
-
-var _temp = function () {
-  if (typeof __REACT_HOT_LOADER__ === 'undefined') {
-    return;
-  }
-
-  __REACT_HOT_LOADER__.register(newsContainer, 'newsContainer', '/Users/wind/Development/mangrove/man-3/common/reducers/news_container_reducer.js');
-
-  __REACT_HOT_LOADER__.register(newsContainers, 'newsContainers', '/Users/wind/Development/mangrove/man-3/common/reducers/news_container_reducer.js');
-
-  __REACT_HOT_LOADER__.register(_default, 'default', '/Users/wind/Development/mangrove/man-3/common/reducers/news_container_reducer.js');
-}();
-
-;
+module.exports = require("redux-socket.io");
 
 /***/ }),
-/* 12 */
+/* 13 */
+/***/ (function(module, exports) {
+
+module.exports = require("socket.io-client");
+
+/***/ }),
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -503,7 +652,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _server = __webpack_require__(5);
+var _server = __webpack_require__(7);
 
 var _reactRedux = __webpack_require__(1);
 
@@ -511,7 +660,7 @@ var _configureStore = __webpack_require__(2);
 
 var _configureStore2 = _interopRequireDefault(_configureStore);
 
-var _Root = __webpack_require__(4);
+var _Root = __webpack_require__(6);
 
 var _Root2 = _interopRequireDefault(_Root);
 

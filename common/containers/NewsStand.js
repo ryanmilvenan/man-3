@@ -4,12 +4,12 @@ import NewsContainer from './NewsContainer.js'
 
 let NewsStand = ({ newsContainers }) => (
   <div>
-    {newsContainers.map(newsContainer =>
+    {newsContainers.map(newsContainer => 
       <NewsContainer
         key={newsContainer.id}
         {...newsContainer}
       />
-    )}
+		)}
   </div>
 );
 

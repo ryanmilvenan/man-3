@@ -1,10 +1,27 @@
+export const ADD_NEWS_CONTAINER = 'NEWSCONTAINER:ADD_NEWS_CONTAINER';
+export const DELETE_NEWS_CONTAINER = 'NEWSCONTAINER:DELETE_NEWS_CONTAINER';
+
+let nextNewsContainerId = 0;
+export const NEWS_CONTAINER_ACTION_CREATORS = {
+  addNewsContainer: (url) => ({
+    type: ADD_NEWS_CONTAINER,
+    id: nextNewsContainerId++,
+    url
+  }),
+
+  deleteNewsContainer: (id) => ({
+    type: DELETE_NEWS_CONTAINER,
+    id: id
+  })
+}
+
 const newsContainer = (state = {}, action) => {
   switch(action.type) {
-    case 'ADD_NEWS_CONTAINER':
+    case ADD_NEWS_CONTAINER:
       return {
         id: action.id,
         url: action.url,
-        timeout: (1000 * 60 * 10)
+        timeout: 1000
       }
     default:
       return state;
@@ -13,11 +30,15 @@ const newsContainer = (state = {}, action) => {
 
 const newsContainers = (state = [], action) => {
   switch(action.type) {
-    case 'ADD_NEWS_CONTAINER':
+    case ADD_NEWS_CONTAINER:
       return [
         ...state,
         newsContainer(undefined, action)
       ];
+    case DELETE_NEWS_CONTAINER:
+      return state.filter(n =>
+        n.id != action.id
+      );
     default:
       return state;
   }

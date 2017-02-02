@@ -6,6 +6,7 @@
   "scripts": {
     "test": "jest",
     "build": "webpack --config webpack.config.prod.js",
+    "prod": "NODE_ENV='production' node svr/index.js",
     "start": "node svr/index.js",
     "debug": "node debug svr/index.js"
   },
@@ -40,6 +41,8 @@
     "redux-devtools-dock-monitor": "^1.1.1",
     "redux-devtools-log-monitor": "^1.2.0",
     "webpack": "v2.2.0",
+    "webpack-dev-middleware": "^1.10.0",
+    "webpack-hot-middleware": "^2.16.1",
     "webpack-node-externals": "^1.5.4",
     "webpack-universal-middleware": "^1.0.0"
   }

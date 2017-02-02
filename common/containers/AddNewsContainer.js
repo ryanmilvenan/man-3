@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { addNewsContainer, sendSocketMessage } from '../actions'
+import { NEWS_CONTAINER_ACTION_CREATORS } from '../reducers/news_container_reducer.js';
 
-let AddNewsContainer = ({ dispatch }) => {
+let AddNewsContainer = ({ dispatch, addNewsContainer }) => {
   let input
 
   return (
@@ -12,8 +12,7 @@ let AddNewsContainer = ({ dispatch }) => {
         if (!input.value.trim()) {
           return
         }
-        //dispatch(addNewsContainer(input.value))
-        dispatch(sendSocketMessage(input.value))
+        addNewsContainer(input.value)
         input.value = ''
       }}>
         <input ref={node => {
@@ -26,6 +25,18 @@ let AddNewsContainer = ({ dispatch }) => {
     </div>
   )
 }
-AddNewsContainer = connect()(AddNewsContainer)
+
+AddNewsContainer.propTypes = {
+  AddNewsContainer: PropTypes.func
+}
+
+const mapDispatchToProps = {
+  ...NEWS_CONTAINER_ACTION_CREATORS
+}
+
+AddNewsContainer = connect(
+  undefined,
+  mapDispatchToProps
+)(AddNewsContainer)
 
 export default AddNewsContainer

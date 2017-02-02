@@ -1,18 +1,19 @@
+require('react-hot-loader/patch')
+
 const path = require('path');
-const nodeExternals = require('webpack-node-externals');
 const webpack = require('webpack');
 
 const PATHS = {
   dev: path.resolve(__dirname, 'dev_tools'),
-  out: path.resolve(__dirname, 'build')
+  out: path.resolve(__dirname, 'dev_build')
 };
 
-module.exports = [
-  {
+module.exports = {
     name: 'client',
     context: PATHS.dev,
+    devtool: 'eval-source-map',
     entry: [
-      'webpack-hot-middleware/client?name=client',
+      'webpack-hot-middleware/client?reload=true',
       'react-hot-loader/patch',
       './index.dev.js',
     ],
@@ -37,30 +38,5 @@ module.exports = [
     plugins: [
       new webpack.HotModuleReplacementPlugin(),
     ]
-  }, 
-  {
-    name: 'server',
-    context: PATHS.dev,
-    target: 'node',
-    externals: [nodeExternals()],
-    entry: './server-entry.dev.js',
-    output: {
-      path: PATHS.out,
-      filename: 'server.bundle.js',
-      libraryTarget: 'commonjs2'
-    },
-		module: {
-			rules: [
-				{
-					test: /\.js$/,
-					exclude: /node_modules/,
-					loaders: [
-            {
-						  loader:'babel-loader'
-            }
-					]
-				}	
-			]
-		}
-  }
-]
+  } 
+

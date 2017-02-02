@@ -1,10 +1,30 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
+import { SOCKET_EVENTS_ACTION_CREATORS } from '../reducers/socket_io_reducer.js';
+import { connect } from 'react-redux';
 
-const NewsContainer = ({id, url, timeout}) => (
-  <div>
-    <p>{id}</p>
-		<p>{url}</p>
-  </div>
-);
+export class NewsContainer extends Component {
+	componentDidMount() {
+    setInterval(this.props.refreshSource, this.props.timeout, this.props.id, this.props.url)
+	}
+	render() {
+		return (
+			<div>
+				<p>{this.props.id}</p>
+				<p>{this.props.url}</p>
+			</div>
+		)
+	}
+}
 
-export default NewsContainer;
+NewsContainer.propTypes = {
+  refreshSource: PropTypes.func
+}
+
+const mapDispatchToProps = {
+  ...SOCKET_EVENTS_ACTION_CREATORS
+}
+
+export default connect(
+  undefined,
+  mapDispatchToProps
+)(NewsContainer);
