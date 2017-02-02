@@ -5,17 +5,17 @@ import DevTools from './DevTools.js';
 import createSocketIoMiddleware from 'redux-socket.io';
 import io from 'socket.io-client';
 
-let socket = io('http://localhost:3000');
-let socketIoMiddleware = createSocketIoMiddleware(socket, "SERVER:");
-
-const enhancer = compose(
-  applyMiddleware(
-    socketIoMiddleware
-  ),
-	DevTools.instrument()
-)
 
 export default function configureStore(preloadedState) {
+  const socket = io('http://localhost:3000');
+  const socketIoMiddleware = createSocketIoMiddleware(socket, "SERVER:");
+
+  const enhancer = compose(
+    applyMiddleware(
+      socketIoMiddleware
+    ),
+    DevTools.instrument()
+  )
   const store = createStore(
     rootReducer,
     preloadedState,

@@ -3,6 +3,7 @@ import express from 'express';
 import http from 'http';
 import path from 'path';
 import socketIo from 'socket.io';
+import reader from 'feed-reader';
 
 //Webpack
 import webpack from 'webpack';
@@ -18,7 +19,7 @@ const io = socketIo(server);
 
 if(process.env.NODE_ENV !== 'production') {
   app.use(webpackDevMiddleware(compiler, {
-    noInfo: false, publicPath: config.output.publicPath
+    noInfo: true, publicPath: config.output.publicPath
   }));
   app.use(webpackHotMiddleware(compiler));
   app.use(express.static(path.resolve(__dirname, '../dev_build')));
@@ -35,8 +36,13 @@ server.listen(3000, () => {
 io.on('connection', (socket) => {
   socket.on('action', (action) => {
     if(action.type == 'SERVER:REFRESH_SOURCE') {
-      console.log("ACTION RECEIVED");
-      socket.emit('action', {type: 'CLIENT:SOURCES', data: {id: action.id, url: action.url}});
+      reader.parse(action.url).then((feed) => {
+        socket.emit('action', {type: 'NEWSCONTAINER:UPDATE_NEWS_CONTAINER', data: {id: action.id, feed: feed, err: null}});
+      }).catch((err) => {
+        socket.emit('action', {type: 'NEWSCONTAINER:UPDATE_NEWS_CONTAINER', data: {id: action.id, feed: null, err: err}});
+      })
     }
   })
 });
+
+

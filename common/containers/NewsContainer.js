@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 
 export class NewsContainer extends Component {
 	componentDidMount() {
+    this.props.refreshSource(this.props.id, this.props.url)
     setInterval(this.props.refreshSource, this.props.timeout, this.props.id, this.props.url)
 	}
 	render() {
 		return (
 			<div>
-				<p>{this.props.id}</p>
 				<p>{this.props.url}</p>
 			</div>
 		)

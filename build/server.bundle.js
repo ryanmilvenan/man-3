@@ -141,8 +141,12 @@ var _temp = function () {
 
 
 exports.__esModule = true;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var ADD_NEWS_CONTAINER = exports.ADD_NEWS_CONTAINER = 'NEWSCONTAINER:ADD_NEWS_CONTAINER';
 var DELETE_NEWS_CONTAINER = exports.DELETE_NEWS_CONTAINER = 'NEWSCONTAINER:DELETE_NEWS_CONTAINER';
+var UPDATE_NEWS_CONTAINER = exports.UPDATE_NEWS_CONTAINER = 'NEWSCONTAINER:UPDATE_NEWS_CONTAINER';
 
 var nextNewsContainerId = 0;
 var NEWS_CONTAINER_ACTION_CREATORS = exports.NEWS_CONTAINER_ACTION_CREATORS = {
@@ -171,8 +175,12 @@ var newsContainer = function newsContainer() {
       return {
         id: action.id,
         url: action.url,
-        timeout: 1000
+        timeout: 1000 * 60 * 10
       };
+    case UPDATE_NEWS_CONTAINER:
+      return _extends({}, state, {
+        feed: action.feed
+      });
     default:
       return state;
   }
@@ -189,6 +197,14 @@ var newsContainers = function newsContainers() {
       return state.filter(function (n) {
         return n.id != action.id;
       });
+    case UPDATE_NEWS_CONTAINER:
+      if (action.err) {
+        console.log("Could Not Get Source");
+      } else {
+        return state.map(function (n) {
+          return newsContainer(n, action);
+        });
+      }
     default:
       return state;
   }
@@ -206,6 +222,8 @@ var _temp = function () {
   __REACT_HOT_LOADER__.register(ADD_NEWS_CONTAINER, 'ADD_NEWS_CONTAINER', '/Users/wind/Development/mangrove/man-3/common/reducers/news_container_reducer.js');
 
   __REACT_HOT_LOADER__.register(DELETE_NEWS_CONTAINER, 'DELETE_NEWS_CONTAINER', '/Users/wind/Development/mangrove/man-3/common/reducers/news_container_reducer.js');
+
+  __REACT_HOT_LOADER__.register(UPDATE_NEWS_CONTAINER, 'UPDATE_NEWS_CONTAINER', '/Users/wind/Development/mangrove/man-3/common/reducers/news_container_reducer.js');
 
   __REACT_HOT_LOADER__.register(nextNewsContainerId, 'nextNewsContainerId', '/Users/wind/Development/mangrove/man-3/common/reducers/news_container_reducer.js');
 
@@ -246,8 +264,6 @@ var sources = function sources() {
   var action = arguments[1];
 
   switch (action.type) {
-    case 'CLIENT:SOURCES':
-      return Object.assign({}, { source: action.data });
     default:
       return state;
   }
@@ -476,7 +492,7 @@ var NewsContainer = exports.NewsContainer = function (_Component) {
 			_react2.default.createElement(
 				'p',
 				null,
-				this.props.id
+				this.props.feed
 			),
 			_react2.default.createElement(
 				'p',

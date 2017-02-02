@@ -11,8 +11,6 @@ export const SOCKET_EVENTS_ACTION_CREATORS = {
 
 const sources = (state = {}, action) => {
   switch(action.type) {
-    case 'CLIENT:SOURCES':
-      return Object.assign({}, {source: action.data});
     default:
       return state;
   }
