@@ -8,12 +8,3 @@ export const SOCKET_EVENTS_ACTION_CREATORS = {
     url
   }) 
 }
-
-const sources = (state = {}, action) => {
-  switch(action.type) {
-    default:
-      return state;
-  }
-}
-
-export default sources;
