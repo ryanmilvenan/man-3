@@ -10,6 +10,7 @@ export class NewsContainer extends Component {
 	render() {
 		return (
 			<div>
+        {/*TODO: CREATE A NEWS ITEM FROM A SLICE */}
 				<p>{this.props.url}</p>
 			</div>
 		)
