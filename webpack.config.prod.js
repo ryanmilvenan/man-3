@@ -32,6 +32,17 @@ module.exports = [
 					]
 				}	
 			]
+    },
+    resolveLoader: {
+      modules: [
+        path.resolve(__dirname, 'node_modules') 
+      ] 
+    },
+    resolve: {
+      modules: [
+        path.resolve(__dirname, 'node_modules'),
+        path.resolve(__dirname, 'common')
+      ] 
     }
   }, 
   {
@@ -57,6 +68,17 @@ module.exports = [
 					]
 				}	
 			]
-		}
+		},
+    resolveLoader: {
+      modules: [
+        path.resolve(__dirname, 'node_modules') 
+      ] 
+    },
+    resolve: {
+      modules: [
+        path.resolve(__dirname, 'node_modules'),
+        path.resolve(__dirname, 'common')
+      ] 
+    }
   }
 ]

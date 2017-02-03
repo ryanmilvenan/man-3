@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react';
-import { SOCKET_EVENTS_ACTION_CREATORS } from '../reducers/socket_io_reducer.js';
+import { SOCKET_EVENTS_ACTION_CREATORS } from 'reducers/socket_io_reducer.js';
 import { connect } from 'react-redux';
 
 export class NewsContainer extends Component {

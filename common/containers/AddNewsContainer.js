@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { NEWS_CONTAINER_ACTION_CREATORS } from '../reducers/news_container_reducer.js';
+import { NEWS_CONTAINER_ACTION_CREATORS } from 'reducers/news_container_reducer.js';
 
 let AddNewsContainer = ({ dispatch, addNewsContainer }) => {
   let input
