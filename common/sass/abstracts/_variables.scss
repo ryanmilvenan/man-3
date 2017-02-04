@@ -1,0 +1,54 @@
+/*
+COLORS
+*/
+$mainColor: #2e9caf;
+$mainFontColor: #4a4a4a;
+$lightGray: #9b9b9b;
+$auth0ParagraphColor: #333;
+
+/*
+FONT SIZES
+*/
+$smFontSize: 14px;
+$mdFontSize: 18px;
+$lgFontSize: 24px;
+$sectionHeadingSize: 36px;
+$buttonFontSize: 16px;
+
+$lato: 'Lato', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+
+/*
+MEDIA SIZES
+*/
+$break-small: 768px;
+$break-medium: 992px;
+$break-large: 1200px;
+$break-exLarge: 1600px;
+
+/*
+MIXINS
+*/
+@mixin sm-tablet {
+  @media (min-width: #{$break-small}) { // and (max-width: #{$break-medium - 1px}
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (min-width: #{$break-medium}) { // and (max-width: #{$break-large - 1px}
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: #{$break-large}) {
+    @content;
+  }
+}
+
+@mixin lg-desktop {
+  @media (min-width: #{$break-exLarge}) {
+    @content;
+  }
+}
+

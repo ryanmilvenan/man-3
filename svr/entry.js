@@ -20,6 +20,7 @@ function renderFullPage(html, preloadedState) {
     <html>
       <head>
         <title>Carnival In Paradise</title>
+        <link rel="stylesheet" type="text/css" href="/bundle.css"/>
       </head>
       <body>
         <div id="root">${html}</div>

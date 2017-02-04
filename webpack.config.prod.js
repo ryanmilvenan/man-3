@@ -1,5 +1,6 @@
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const webpack = require('webpack');
 
 const PATHS = {
@@ -30,9 +31,24 @@ module.exports = [
 						  loader:'babel-loader'
             }
 					]
-				}	
+				},	
+				{
+					test: /\.css$/,
+					loader: ExtractTextPlugin.extract({ fallbackLoader: 'style-loader', loader:'css-loader' })
+				},	
+        {
+          test: /\.(eot|svg|ttf|woff(2)?)(\?v=\d+\.\d+\.\d+)?/,
+          loaders: [
+            {
+              loader:'url-loader'
+            }
+          ]
+        }	
 			]
     },
+    plugins: [
+      new ExtractTextPlugin('bundle.css')
+    ],
     resolveLoader: {
       modules: [
         path.resolve(__dirname, 'node_modules') 
@@ -66,7 +82,19 @@ module.exports = [
 						  loader:'babel-loader'
             }
 					]
-				}	
+				},	
+				{
+					test: /\.css$/,
+					loader: ExtractTextPlugin.extract({ fallbackLoader: 'style-loader', loader:'css-loader' })
+				},	
+        {
+          test: /\.(eot|svg|ttf|woff(2)?)(\?v=\d+\.\d+\.\d+)?/,
+          loaders: [
+            {
+              loader:'url-loader'
+            }
+          ]
+        }	
 			]
 		},
     resolveLoader: {

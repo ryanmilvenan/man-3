@@ -2,6 +2,7 @@ require('react-hot-loader/patch')
 
 const path = require('path');
 const webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const PATHS = {
   dev: path.resolve(__dirname, 'dev_tools')
@@ -31,11 +32,38 @@ module.exports = {
             loader:'babel-loader'
           }
         ]
+      },	
+      {
+        test: /\.css$/,
+				loader: ExtractTextPlugin.extract({ fallbackLoader: 'style-loader', loader:'css-loader' })
+      },	
+      {
+        test: /\.scss$/,
+        loaders: [
+          {
+            loader:'style-loader'
+          },
+          {
+            loader:'css-loader'
+          },
+          {
+            loader:'sass-loader'
+          }
+        ]
+      },
+      {
+        test: /\.(eot|svg|ttf|woff(2)?)(\?v=\d+\.\d+\.\d+)?/,
+        loaders: [
+          {
+            loader:'url-loader'
+          }
+        ]
       }	
     ]
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
+    new ExtractTextPlugin('bundle.css')
   ],
   resolveLoader: {
     modules: [
