@@ -7,7 +7,7 @@
     "test": "jest",
     "build": "webpack --config webpack.config.prod.js",
     "prod": "NODE_ENV='production' node svr/index.js",
-    "start": "node svr/index.js",
+    "start": "nodemon --watch svr svr/index.js",
     "debug": "node debug svr/index.js"
   },
   "repository": {
@@ -42,6 +42,7 @@
     "feed-reader": "^1.1.2",
     "file-loader": "^0.10.0",
     "node-sass": "^4.5.0",
+    "nodemon": "^1.11.0",
     "react-hot-loader": "next",
     "redux-devtools": "^3.3.2",
     "redux-devtools-dock-monitor": "^1.1.1",

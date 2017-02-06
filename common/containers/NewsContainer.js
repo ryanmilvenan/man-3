@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import NewsItem from 'components/NewsItem';
 import { SOCKET_EVENTS_ACTION_CREATORS } from 'reducers/socket_io_reducer';
+import { NEWS_ITEM_ACTION_CREATORS } from 'reducers/news_container_reducer';
 import { connect } from 'react-redux';
 
 export class NewsContainer extends Component {
@@ -14,11 +15,8 @@ export class NewsContainer extends Component {
         {this.props.items.map((item, idx) => 
           <NewsItem
             key={idx}
-            id={idx}
-            headline={item.title}
-            detail={item.content}
-            url={item.link}
-            expanded={false}
+            {...item}
+            onClick={() => this.props.toggleExpand(item.containerId, idx)}
           />
         )}
       </div>
@@ -35,13 +33,12 @@ NewsContainer.propTypes = {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return state.newsContainers.filter(container =>
-    ownProps.id == container.id
-  )[0]
+  return state.newsContainers[ownProps.id] || {};
 }
 
 const mapDispatchToProps = {
-  ...SOCKET_EVENTS_ACTION_CREATORS
+  ...SOCKET_EVENTS_ACTION_CREATORS,
+  ...NEWS_ITEM_ACTION_CREATORS
 }
 
 export default connect(
