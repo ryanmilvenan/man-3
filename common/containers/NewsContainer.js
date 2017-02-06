@@ -1,8 +1,9 @@
 import React, { PropTypes, Component } from 'react';
-import NewsItem from 'components/NewsItem';
+import { connect } from 'react-redux';
 import { SOCKET_EVENTS_ACTION_CREATORS } from 'reducers/socket_io_reducer';
 import { NEWS_ITEM_ACTION_CREATORS } from 'reducers/news_container_reducer';
-import { connect } from 'react-redux';
+import NewsItem from 'components/NewsItem';
+import ContainerHeader from 'components/ContainerHeader';
 
 export class NewsContainer extends Component {
 	componentDidMount() {
@@ -11,7 +12,11 @@ export class NewsContainer extends Component {
 	}
 	render() {
     return (
-      <div>
+      <div className="news-container">
+        <ContainerHeader title={this.props.url} />
+				{this.props.loading &&
+					<div className="loader"></div>
+				}
         {this.props.items.map((item, idx) => 
           <NewsItem
             key={idx}

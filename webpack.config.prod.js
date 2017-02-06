@@ -37,6 +37,20 @@ module.exports = [
 					loader: ExtractTextPlugin.extract({ fallbackLoader: 'style-loader', loader:'css-loader' })
 				},	
         {
+          test: /\.scss$/,
+          loaders: [
+            {
+              loader:'style-loader'
+            },
+            {
+              loader:'css-loader'
+            },
+            {
+              loader:'sass-loader'
+            }
+          ]
+        },
+        {
           test: /\.(eot|svg|ttf|woff(2)?)(\?v=\d+\.\d+\.\d+)?/,
           loaders: [
             {
@@ -87,6 +101,20 @@ module.exports = [
 					test: /\.css$/,
 					loader: ExtractTextPlugin.extract({ fallbackLoader: 'style-loader', loader:'css-loader' })
 				},	
+        {
+          test: /\.scss$/,
+          loaders: [
+            {
+              loader:'style-loader'
+            },
+            {
+              loader:'css-loader'
+            },
+            {
+              loader:'sass-loader'
+            }
+          ]
+        },
         {
           test: /\.(eot|svg|ttf|woff(2)?)(\?v=\d+\.\d+\.\d+)?/,
           loaders: [

@@ -6,15 +6,15 @@ let NewsItem = ({ title, content, link, expanded, onClick, img }) => {
   return (
     <div className="news-item">
       <i 
-        className="fa fa-plus-square-o" 
+        className={expanded ? "fa fa-minus-square-o" : "fa fa-plus-square-o"}
         aria-hidden="true" 
         onClick={onClick}>
       </i>
       <a href={link}>{title}</a>
       {expanded && 
-        <div>
+        <div className="content">
           {img &&
-            <img src={img} />
+            <img src={img} className="detail-image"/>
           }
           <p>{content}</p>
         </div>

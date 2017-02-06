@@ -1,0 +1,15 @@
+@import "../abstracts/_variables.scss";
+
+.news-container {
+  width: 100%;
+  flex-shrink: 1;
+  border: thin solid blue;
+  border-radius: 10px;
+  margin-right: 0.25rem;
+  margin-left: 0.25rem;
+	margin-top: 0.5rem;
+
+  @include desktop {
+    width: 19rem;
+  }
+}

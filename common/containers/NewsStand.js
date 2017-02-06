@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import NewsContainer from './NewsContainer.js'
 
 let NewsStand = ({ newsContainers }) => (
-  <div>
+  <div className="news-stand">
     {newsContainers.map(newsContainer => 
       <NewsContainer
         key={newsContainer.id}

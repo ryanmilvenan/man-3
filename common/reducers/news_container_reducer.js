@@ -1,3 +1,5 @@
+import { REFRESH_SOURCE } from './socket_io_reducer.js';
+
 //NewsItem Actions
 export const TOGGLE_DETAIL_EXPAND = 'NEWSITEM:TOGGLE_DETAIL_EXPAND';
 
@@ -57,13 +59,24 @@ export const newsContainer = (state = {}, action) => {
         url: action.url,
         maxHeadlines: 10,
         timeout: (1000 * 60 * 10),
-        items: []
+        items: [],
+        loading: true
       }
+		case REFRESH_SOURCE:
+			if(action.id == state.id) {
+				return {
+					...state,
+					loading: true
+				}	
+			} else {
+				return state;
+			}	
     case UPDATE_NEWS_CONTAINER_SOURCES:
       if(action.data.id == state.id && action.data.feed) {
         return {
           ...state,
-          items: action.data.feed.entries.map((item, idx) => {
+          loading: false,
+          items: action.data.feed.entries.slice(0, state.maxHeadlines).map((item, idx) => {
             return newsItem(item, action, idx) 
           })
         }
@@ -108,6 +121,10 @@ export const newsContainers = (state = [], action) => {
       return state.map(n => 
         newsContainer(n, action) 
       );
+		case REFRESH_SOURCE:
+			return state.map(n =>
+				newsContainer(n, action)
+			);
     default:
       return state;
   }
