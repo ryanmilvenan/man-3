@@ -7,8 +7,8 @@ import ContainerHeader from 'components/ContainerHeader';
 
 export class NewsContainer extends Component {
 	componentDidMount() {
-    this.props.refreshSource(this.props.id, this.props.url)
-    setInterval(this.props.refreshSource, this.props.timeout, this.props.id, this.props.url)
+    this.props.refreshSource(this.props.globalState, this.props.id, this.props.url)
+    setInterval(this.props.refreshSource, this.props.timeout, this.props.globalState, this.props.id, this.props.url)
 	}
 	render() {
     return (
@@ -17,7 +17,7 @@ export class NewsContainer extends Component {
 				{this.props.loading &&
 					<div className="loader"></div>
 				}
-        {this.props.items.map((item, idx) => 
+        {!this.props.loading && this.props.items.map((item, idx) => 
           <NewsItem
             key={idx}
             {...item}
@@ -38,7 +38,23 @@ NewsContainer.propTypes = {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return state.newsContainers[ownProps.id] || {};
+	let id;
+	if(ownProps._doc) {
+		id = ownProps._doc && ownProps._doc.id
+	}
+	if(typeof ownProps.id == 'number') {
+		id = ownProps.id
+	}
+  let thisContainer = state.newsContainers[id] || {};
+	return {
+		id: thisContainer.id,
+		url: thisContainer.url,
+		maxHeadlines: thisContainer.maxHeadlines,
+		timeout: thisContainer.timeout,
+		loading: thisContainer.loading,
+		items: thisContainer.items,
+		globalState: state
+	}
 }
 
 const mapDispatchToProps = {

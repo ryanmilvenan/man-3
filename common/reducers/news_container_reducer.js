@@ -38,9 +38,9 @@ export const DELETE_NEWS_CONTAINER = 'NEWSCONTAINER:DELETE_NEWS_CONTAINER';
 export const UPDATE_NEWS_CONTAINER_SOURCES = 'NEWSCONTAINER:UPDATE_NEWS_CONTAINER_SOURCES';
 
 export const NEWS_CONTAINER_ACTION_CREATORS = {
-  addNewsContainer: (url) => ({
+  addNewsContainer: (url, nextId) => ({
     type: ADD_NEWS_CONTAINER,
-    id: nextNewsContainerId++,
+    id: nextId,
     url
   }),
 
@@ -50,7 +50,6 @@ export const NEWS_CONTAINER_ACTION_CREATORS = {
   })
 }
 
-let nextNewsContainerId = 0;
 export const newsContainer = (state = {}, action) => {
   switch(action.type) {
     case ADD_NEWS_CONTAINER:
@@ -62,15 +61,15 @@ export const newsContainer = (state = {}, action) => {
         items: [],
         loading: true
       }
-		case REFRESH_SOURCE:
-			if(action.id == state.id) {
-				return {
-					...state,
-					loading: true
-				}	
-			} else {
-				return state;
-			}	
+    case REFRESH_SOURCE:
+      if(action.id == state.id) {
+        return {
+          ...state,
+          loading: true
+        }	
+      } else {
+        return state;
+      }	
     case UPDATE_NEWS_CONTAINER_SOURCES:
       if(action.data.id == state.id && action.data.feed) {
         return {
@@ -95,6 +94,7 @@ export const newsContainer = (state = {}, action) => {
   }
 }
 
+export const FETCH_SAVED_SOURCES = 'NEWSSTAND:FETCH_SAVED_SOURCES';
 export const newsContainers = (state = [], action) => {
   switch(action.type) {
     case ADD_NEWS_CONTAINER:
@@ -125,6 +125,10 @@ export const newsContainers = (state = [], action) => {
 			return state.map(n =>
 				newsContainer(n, action)
 			);
+    case FETCH_SAVED_SOURCES:
+      return [
+        ...action.data.state
+      ]
     default:
       return state;
   }

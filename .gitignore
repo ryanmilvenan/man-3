@@ -1,3 +1,13 @@
 node_modules/
 npm-debug.log
 build/
+
+mongodb/diagnostic.data/
+mongodb/*.wt
+mongodb/*.lock
+mongodb/WiredTiger
+mongodb/journal/
+mongodb/WiredTiger
+mongodb/WiredTiger.turtle
+mongodb/*.bson
+mongodb/logs/*

@@ -21,7 +21,7 @@ NewsStand.propTypes = {
   }).isRequired).isRequired
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
   return {
     newsContainers: state.newsContainers
   }

@@ -6,9 +6,10 @@
   "scripts": {
     "test": "jest",
     "build": "webpack --config webpack.config.prod.js",
-    "prod": "NODE_ENV='production' node svr/index.js",
-    "start": "nodemon --watch svr svr/index.js",
-    "debug": "node debug svr/index.js"
+    "prod": "concurrently \"mongod --dbpath ./mongodb --logpath ./mongodb/logs/logs.prod\" \"NODE_ENV='production' node svr/index.js\"",
+    "start": "concurrently \"mongod --dbpath ./mongodb --logpath ./mongodb/logs/logs.dev\" \"nodemon --watch svr svr/index.js\"",
+    "debug": "node debug svr/index.js",
+    "debug-prod": "NODE_ENV='production' node debug svr/index.js"
   },
   "repository": {
     "type": "git",
@@ -21,13 +22,11 @@
   },
   "homepage": "https://github.com/ryanmilvenan/man-3#readme",
   "dependencies": {
-    "font-awesome": "^4.7.0",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-redux": "^5.0.2",
     "redux": "^3.6.0",
-    "redux-socket.io": "^1.3.1",
-    "socket.io": "^1.7.2"
+    "redux-socket.io": "^1.3.1"
   },
   "devDependencies": {
     "babel-core": "^6.22.1",
@@ -36,11 +35,14 @@
     "babel-preset-react": "^6.22.0",
     "babel-preset-stage-0": "^6.22.0",
     "babel-register": "^6.22.0",
+    "concurrently": "^3.1.0",
     "css-loader": "^0.26.1",
     "express": "^4.14.0",
     "extract-text-webpack-plugin": "v2.0.0-rc.1",
     "feed-reader": "^1.1.2",
     "file-loader": "^0.10.0",
+    "font-awesome": "^4.7.0",
+    "mongoose": "^4.8.1",
     "node-sass": "^4.5.0",
     "nodemon": "^1.11.0",
     "react-hot-loader": "next",
@@ -48,6 +50,7 @@
     "redux-devtools-dock-monitor": "^1.1.1",
     "redux-devtools-log-monitor": "^1.2.0",
     "sass-loader": "^4.1.1",
+    "socket.io": "^1.7.2",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
     "webpack": "v2.2.0",

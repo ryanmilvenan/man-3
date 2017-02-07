@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { NEWS_CONTAINER_ACTION_CREATORS } from 'reducers/news_container_reducer.js';
 
-let AddNewsContainer = ({ dispatch, addNewsContainer }) => {
+let AddNewsContainer = ({ addNewsContainer, nextContainerId }) => {
   let input
 
   return (
@@ -12,7 +12,7 @@ let AddNewsContainer = ({ dispatch, addNewsContainer }) => {
         if (!input.value.trim()) {
           return
         }
-        addNewsContainer(input.value)
+        addNewsContainer(input.value, nextContainerId)
         input.value = ''
       }}>
         <input ref={node => {
@@ -30,12 +30,18 @@ AddNewsContainer.propTypes = {
   AddNewsContainer: PropTypes.func
 }
 
+const mapStateToProps = (state) => {
+  return {
+    nextContainerId: state.newsContainers.length
+  }
+}
+
 const mapDispatchToProps = {
   ...NEWS_CONTAINER_ACTION_CREATORS
 }
 
 AddNewsContainer = connect(
-  undefined,
+  mapStateToProps,
   mapDispatchToProps
 )(AddNewsContainer)
 

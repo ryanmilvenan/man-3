@@ -34,8 +34,29 @@ NewsItem.propTypes = {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return state.newsContainers[ownProps.containerId] && 
-    state.newsContainers[ownProps.containerId].items[ownProps.itemId] || {};
+	let thisItem, containerId, itemId;	
+	if(ownProps._doc) {
+		containerId = ownProps._doc.containerId;
+		itemId = ownProps._doc.itemId;
+	}
+	if(typeof ownProps.containerId == 'number') {
+		containerId = ownProps.containerId;
+		itemId = ownProps.itemId;		
+	}
+  thisItem = state.newsContainers[containerId] && 
+    state.newsContainers[containerId].items[itemId] || {};
+	return {
+    expanded: thisItem.expanded, 
+    containerId: thisItem.containerId,
+    itemId: thisItem.itemId,
+    img: thisItem.img, 
+	  content: thisItem.content,	
+		author: thisItem.author,
+		publishedDate: thisItem.publishedDate,
+		contentSnippet: thisItem.contentSnippet,
+		title: thisItem.title,
+		link: thisItem.link
+	}
 }
 
 const mapDispatchToProps = {

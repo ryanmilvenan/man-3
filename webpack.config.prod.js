@@ -1,5 +1,6 @@
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
+const pkg = require('./package.json');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const webpack = require('webpack');
 
@@ -9,13 +10,16 @@ const PATHS = {
   out: path.resolve(__dirname, 'build')
 };
 
+const extractCSS = new ExtractTextPlugin('stylesheets/css-bundle.css');
+const extractSASS = new ExtractTextPlugin('stylesheets/sass-bundle.css');
 module.exports = [
   {
     name: 'client',
     context: PATHS.client,
-    entry: [
-      './index.js',
-    ],
+    entry: {
+      main:'./index.js',
+      vendor: Object.keys(pkg.dependencies)
+    },
     output: {
       path: PATHS.out,
       filename: 'client.bundle.js',
@@ -34,21 +38,14 @@ module.exports = [
 				},	
 				{
 					test: /\.css$/,
-					loader: ExtractTextPlugin.extract({ fallbackLoader: 'style-loader', loader:'css-loader' })
+					loader: extractCSS.extract({ fallbackLoader: 'style-loader', loader:'css-loader' })
 				},	
         {
           test: /\.scss$/,
-          loaders: [
-            {
-              loader:'style-loader'
-            },
-            {
-              loader:'css-loader'
-            },
-            {
-              loader:'sass-loader'
-            }
-          ]
+          loader: extractSASS.extract({
+            fallbackLoader: 'style-loader',
+            loader: "css-loader!sass-loader"
+          })
         },
         {
           test: /\.(eot|svg|ttf|woff(2)?)(\?v=\d+\.\d+\.\d+)?/,
@@ -61,7 +58,19 @@ module.exports = [
 			]
     },
     plugins: [
-      new ExtractTextPlugin('bundle.css')
+      extractCSS,
+      extractSASS,
+      new webpack.optimize.UglifyJsPlugin({
+        compressor: {
+          warnings: false 
+        } 
+      }),
+      new webpack.DefinePlugin({
+        'process.env': {
+          'NODE_ENV': JSON.stringify('production')
+        }
+      }),
+      new webpack.optimize.CommonsChunkPlugin({name: "vendor", filename: "vendor.bundle.js"})
     ],
     resolveLoader: {
       modules: [
@@ -99,21 +108,14 @@ module.exports = [
 				},	
 				{
 					test: /\.css$/,
-					loader: ExtractTextPlugin.extract({ fallbackLoader: 'style-loader', loader:'css-loader' })
+					loader: extractCSS.extract({ fallbackLoader: 'style-loader', loader:'css-loader' })
 				},	
         {
           test: /\.scss$/,
-          loaders: [
-            {
-              loader:'style-loader'
-            },
-            {
-              loader:'css-loader'
-            },
-            {
-              loader:'sass-loader'
-            }
-          ]
+          loader: extractSASS.extract({
+            fallbackLoader: 'style-loader',
+            loader: "css-loader!sass-loader"
+          })
         },
         {
           test: /\.(eot|svg|ttf|woff(2)?)(\?v=\d+\.\d+\.\d+)?/,
@@ -124,7 +126,11 @@ module.exports = [
           ]
         }	
 			]
-		},
+    },
+    plugins: [
+      extractCSS,
+      extractSASS
+    ],
     resolveLoader: {
       modules: [
         path.resolve(__dirname, 'node_modules') 
