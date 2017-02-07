@@ -5,11 +5,12 @@
   flex-shrink: 1;
   border: thin solid blue;
   border-radius: 10px;
-  margin-right: 0.25rem;
-  margin-left: 0.25rem;
-	margin-top: 0.5rem;
+  margin: 1rem auto;
 
   @include desktop {
     width: 19rem;
+    margin-right: 0.25rem;
+    margin-left: 0.25rem;
+    margin-top: 0.5rem;
   }
 }

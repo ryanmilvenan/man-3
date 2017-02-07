@@ -2,7 +2,7 @@
 import { server } from '../app.js';
 import socketIo from 'socket.io';
 import reader from 'feed-reader';
-import { parseImage } from './parser.js';
+import { checkHtml, parseImage, encodeHtml } from './parser.js';
 import db from './db.js'
 
 //Events
@@ -36,12 +36,18 @@ io.on('connection', (socket) => {
 
               newsStand.save((err) => {
                 if(err) return console.error(err);
+
                 let processed_entries = feed.entries.map((item) => {
-                  return {
-                    ...item,
-                    img: parseImage(item.content)
+                  if(checkHtml(item.content)) {
+                    return {
+                      ...item,
+                      img: parseImage(item.content),
+                      raw_html: {__html: item.content}
+                    }
+                  } else {
+                    return item; 
                   }
-                });
+                })
                 feed.entries = processed_entries;
                 socket.emit('action', {type: UPDATE_NEWS_CONTAINER_SOURCES, data: {id: action.id, url: action.url, feed: feed, err: null}});
               })	

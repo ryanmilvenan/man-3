@@ -1,25 +1,44 @@
+@import "../abstracts/_variables.scss";
+
 .news-item {
   border-top: thin solid gray;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  margin-left: 0.4rem;
-  margin-right: 0.2rem;
-
+  margin: 1rem auto;
   padding-top: 0.7rem;
 	word-wrap: break-word;
 
+  @include desktop {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    margin-left: 0.4rem;
+    margin-right: 0.2rem;
+  }
+
   i {
+    margin-top: 0.2rem;
     margin-right:0.3rem;
+    margin-left: 0.4rem;
     color: blue;
     cursor: pointer;
+  }
+
+  > a {
+    margin-left: 2.5rem;
+    @include desktop {
+      margin-left:0.4rem;
+    }
   }
 
   .content {
     display: flex;
     flex-direction: column;
 
-    .detail-image {
+    .table-data {
       margin: 1rem auto;
+      border: outset;
+      border-radius: 10px;
+      border-color: lightgray;
+      padding: 1.25rem;
     }
+
   }
 }

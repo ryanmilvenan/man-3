@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { NEWS_ITEM_ACTION_CREATORS } from 'reducers/news_container_reducer';
 
-let NewsItem = ({ title, content, link, expanded, onClick, img }) => {
+let NewsItem = ({ title, content, link, expanded, onClick, img, raw_html }) => {
   return (
     <div className="news-item">
       <i 
@@ -13,10 +13,11 @@ let NewsItem = ({ title, content, link, expanded, onClick, img }) => {
       <a href={link}>{title}</a>
       {expanded && 
         <div className="content">
-          {img &&
-            <img src={img} className="detail-image"/>
+          {raw_html ?
+            <div className="table-data" dangerouslySetInnerHTML={raw_html} />
+            :
+            <p>{content}</p>
           }
-          <p>{content}</p>
         </div>
       }
     </div>
@@ -30,6 +31,7 @@ NewsItem.propTypes = {
   expanded: PropTypes.bool.isRequired,
   content: PropTypes.string,
   img: PropTypes.string,
+  raw_html: PropTypes.object,
   onClick: PropTypes.func
 }
 
@@ -50,6 +52,7 @@ const mapStateToProps = (state, ownProps) => {
     containerId: thisItem.containerId,
     itemId: thisItem.itemId,
     img: thisItem.img, 
+    raw_html: thisItem.raw_html,
 	  content: thisItem.content,	
 		author: thisItem.author,
 		publishedDate: thisItem.publishedDate,
