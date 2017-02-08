@@ -23,8 +23,9 @@ io.on('connection', (socket) => {
             }
 
             //Persist the current state
-            db.NewsStand.find({}, (err, docs) => {
-              if(err) return console.error(err);
+            let findCurrentState = db.NewsStand.find({}).exec();
+            findCurrentState.then((docs) => {
+
               let newsStand;
               if(!docs.length) {
                 newsStand = new db.NewsStand(action.state);
@@ -34,8 +35,8 @@ io.on('connection', (socket) => {
                 newsStand = currentState;
               }
 
-              newsStand.save((err) => {
-                if(err) return console.error(err);
+              let saveState = newsStand.save();
+              saveState.then(() => {
 
                 let processed_entries = feed.entries.map((item) => {
                   if(checkHtml(item.content)) {
@@ -50,13 +51,17 @@ io.on('connection', (socket) => {
                 })
                 feed.entries = processed_entries;
                 socket.emit('action', {type: UPDATE_NEWS_CONTAINER_SOURCES, data: {id: action.id, url: action.url, feed: feed, err: null}});
-              })	
-            });
 
+              }).catch((err) => {
+                console.error(`ERROR SAVING STATE: ${error}`);
+              })
+            }).catch((err) => {
+              console.error(`ERROR FETCHING STATE: ${error}`);
+            });
           }).catch((err) => {
-            console.log("ERROR", err)
+            console.error("ERROR", err)
             socket.emit('action', {type: UPDATE_NEWS_CONTAINER_SOURCES, data: {id: action.id, url: action.url, feed: null, err: err}});
-          })
+          });
         break;
 
       case FETCH_STATE:
@@ -64,8 +69,9 @@ io.on('connection', (socket) => {
           db.mongoose.connect('mongodb://localhost/mangrove');
         }
 
-        db.NewsStand.find({}, (err, docs) => {
-          if(err) return console.error(err);
+        let fetchState = db.NewsStand.find({}).exec();
+        fetchState.then((docs) => {
+
           let newsStand;
           if(docs.length) {
             let currentState = docs[0];
@@ -74,7 +80,10 @@ io.on('connection', (socket) => {
             newsStand = [] 
           }
           socket.emit('action', {type: FETCH_SAVED_SOURCES, data: {state: newsStand}})
-        })
+
+        }).catch((err) => {
+          console.error(`ERROR FETCHING STATE(DEV): ${err}`)
+        });
         break;
       }
     }
