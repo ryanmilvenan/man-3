@@ -20,6 +20,7 @@ $lato: 'Lato', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ub
 /*
 MEDIA SIZES
 */
+$break-xsmall: 415px;
 $break-small: 768px;
 $break-medium: 992px;
 $break-large: 1200px;
@@ -28,6 +29,25 @@ $break-exLarge: 1600px;
 /*
 MIXINS
 */
+@mixin phone {
+  @media only screen 
+    and (min-device-width: 375px) 
+    and (max-device-width: 667px) 
+    and (-webkit-min-device-pixel-ratio: 2) { 
+      @content
+  }
+
+}
+
+@mixin big-phone {
+	@media only screen 
+    and (min-device-width: 414px) 
+    and (max-device-width: 736px) 
+    and (-webkit-min-device-pixel-ratio: 3) { 
+		  @content;
+	}
+}
+
 @mixin sm-tablet {
   @media (min-width: #{$break-small}) { // and (max-width: #{$break-medium - 1px}
     @content;

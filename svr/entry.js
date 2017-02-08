@@ -30,7 +30,9 @@ export default function handleRender(req, res) {
 	})	
 }
 
-function renderFullPage(html, preloadedState) {
+
+
+const renderFullPage = (html, preloadedState) => {
   return `
     <!doctype html>
     <html>
