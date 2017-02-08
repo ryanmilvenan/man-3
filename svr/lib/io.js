@@ -42,7 +42,6 @@ io.on('connection', (socket) => {
                   if(checkHtml(item.content)) {
                     return {
                       ...item,
-                      img: parseImage(item.content),
                       raw_html: {__html: item.content}
                     }
                   } else {
