@@ -38,13 +38,13 @@ module.exports = [
 				},	
 				{
 					test: /\.css$/,
-					loader: extractCSS.extract({ fallbackLoader: 'style-loader', loader:'css-loader' })
+					loader: extractCSS.extract({ fallbackLoader: 'style-loader', loader:'css-loader?minimize=true' })
 				},	
         {
           test: /\.scss$/,
           loader: extractSASS.extract({
             fallbackLoader: 'style-loader',
-            loader: "css-loader!sass-loader"
+            loader: "css-loader?minimize=true!sass-loader"
           })
         },
         {
@@ -108,13 +108,13 @@ module.exports = [
 				},	
 				{
 					test: /\.css$/,
-					loader: extractCSS.extract({ fallbackLoader: 'style-loader', loader:'css-loader' })
+					loader: extractCSS.extract({ fallbackLoader: 'style-loader', loader:'css-loader?minimize=true' })
 				},	
         {
           test: /\.scss$/,
           loader: extractSASS.extract({
             fallbackLoader: 'style-loader',
-            loader: "css-loader!sass-loader"
+            loader: "css-loader?minimize=true!sass-loader"
           })
         },
         {
