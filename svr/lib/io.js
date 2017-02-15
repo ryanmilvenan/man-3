@@ -3,7 +3,8 @@ import { server } from '../app.js';
 import socketIo from 'socket.io';
 import reader from 'feed-reader';
 import { checkHtml, parseImage, encodeHtml } from './parser.js';
-import db from './db.js'
+import db from './db/index.js';
+import NewsStand from './db/schema/NewsStandSchema.js';
 
 //Events
 import { REFRESH_SOURCE, FETCH_STATE } from '../../common/reducers/socket_io_reducer.js';
@@ -21,42 +22,44 @@ io.on('connection', (socket) => {
             if(!db.connection.readyState) {
               db.mongoose.connect('mongodb://localhost/mangrove');
             }
-
-            //Persist the current state
-            let findCurrentState = db.NewsStand.find({}).exec();
-            findCurrentState.then((docs) => {
-
-              let newsStand;
-              if(!docs.length) {
-                newsStand = new db.NewsStand(action.state);
-              } else {
-                let currentState = docs[0];
-                currentState.newsContainers = action.state.newsContainers;
-                newsStand = currentState;
-              }
-
-              let saveState = newsStand.save();
-              saveState.then(() => {
-
-                let processed_entries = feed.entries.map((item) => {
-                  if(checkHtml(item.content)) {
-                    return {
-                      ...item,
-                      raw_html: {__html: item.content}
-                    }
-                  } else {
-                    return item; 
+            NewsStand.refreshSources(action.state).then(() => {
+              let processed_entries = feed.entries.map((item) => {
+                if(checkHtml(item.content)) {
+                  return {
+                    ...item,
+                    raw_html: {__html: item.content}
                   }
-                })
-                feed.entries = processed_entries;
-                socket.emit('action', {type: UPDATE_NEWS_CONTAINER_SOURCES, data: {id: action.id, url: action.url, feed: feed, err: null}});
-
-              }).catch((err) => {
-                console.error(`ERROR SAVING STATE: ${error}`);
+                } else {
+                  return item; 
+                }
               })
-            }).catch((err) => {
-              console.error(`ERROR FETCHING STATE: ${error}`);
+              feed.entries = processed_entries;
+              socket.emit('action', {type: UPDATE_NEWS_CONTAINER_SOURCES, data: {id: action.id, url: action.url, feed: feed, err: null}});
             });
+
+            ////Persist the current state
+            //let findCurrentState = db.NewsStand.find({}).exec();
+            //findCurrentState.then((docs) => {
+
+            //  let newsStand;
+            //  if(!docs.length) {
+            //    newsStand = new db.NewsStand(action.state);
+            //  } else {
+            //    let currentState = docs[0];
+            //    currentState.newsContainers = action.state.newsContainers;
+            //    newsStand = currentState;
+            //  }
+
+            //  let saveState = newsStand.save();
+            //  saveState.then(() => {
+
+
+            //  }).catch((err) => {
+            //    console.error(`ERROR SAVING STATE: ${error}`);
+            //  })
+            //}).catch((err) => {
+            //  console.error(`ERROR FETCHING STATE: ${error}`);
+            //});
           }).catch((err) => {
             console.error("ERROR", err)
             socket.emit('action', {type: UPDATE_NEWS_CONTAINER_SOURCES, data: {id: action.id, url: action.url, feed: null, err: err}});
@@ -68,7 +71,7 @@ io.on('connection', (socket) => {
           db.mongoose.connect('mongodb://localhost/mangrove');
         }
 
-        let fetchState = db.NewsStand.find({}).exec();
+        let fetchState = db.mongoose.model("NewsStand").find({}).exec();
         fetchState.then((docs) => {
 
           let newsStand;

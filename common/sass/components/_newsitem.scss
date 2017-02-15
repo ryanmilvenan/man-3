@@ -33,15 +33,23 @@
     flex-direction: column;
 
     .table-data {
+      width:95%;
       margin: 1rem auto;
       border: outset;
       border-radius: 10px;
       border-color: lightgray;
-      padding: 1.25rem;
+      table-layout: fixed;
 
       td {
-        @include phone, big-phone {
+        @include desktop {
+          font-size: initial; 
+        }
+        @include phone {
           font-size:2.25rem; 
+        }
+
+        > a {
+          word-break:break-all;
         }
       }
     }

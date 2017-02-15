@@ -50,7 +50,7 @@ export const NEWS_CONTAINER_ACTION_CREATORS = {
   })
 }
 
-export const newsContainer = (state = {}, action) => {
+export const newsContainer = (state = {}, action, idx = -1) => {
   switch(action.type) {
     case ADD_NEWS_CONTAINER:
       return {
@@ -89,6 +89,14 @@ export const newsContainer = (state = {}, action) => {
           return newsItem(item, action, idx)
         })
       };
+    case DELETE_NEWS_CONTAINER:
+      return {
+        ...state,
+        id: idx,
+        items: state.items.map((item, idx) => {
+          return newsItem(item, action, idx)
+        })
+      }
     default:
       return state;
   }
@@ -105,7 +113,9 @@ export const newsContainers = (state = [], action) => {
     case DELETE_NEWS_CONTAINER:
       return state.filter(n =>
         n.id != action.id
-      );
+      ).map((n, idx) => {
+        newsContainer(n, action, idx); 
+      });
     case UPDATE_NEWS_CONTAINER_SOURCES:
       if (action.data.err) {
         console.error(`CONTAINER ERROR: could not get source for url ${action.data.url}`);

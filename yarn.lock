@@ -746,6 +746,14 @@ babel-plugin-transform-strict-mode@^6.22.0:
     babel-runtime "^6.22.0"
     babel-types "^6.22.0"
 
+babel-polyfill@^6.22.0:
+  version "6.22.0"
+  resolved "https://registry.yarnpkg.com/babel-polyfill/-/babel-polyfill-6.22.0.tgz#1ac99ebdcc6ba4db1e2618c387b2084a82154a3b"
+  dependencies:
+    babel-runtime "^6.22.0"
+    core-js "^2.4.0"
+    regenerator-runtime "^0.10.0"
+
 babel-preset-es2015@^6.22.0:
   version "6.22.0"
   resolved "https://registry.yarnpkg.com/babel-preset-es2015/-/babel-preset-es2015-6.22.0.tgz#af5a98ecb35eb8af764ad8a5a05eb36dc4386835"
@@ -774,6 +782,19 @@ babel-preset-es2015@^6.22.0:
     babel-plugin-transform-es2015-typeof-symbol "^6.22.0"
     babel-plugin-transform-es2015-unicode-regex "^6.22.0"
     babel-plugin-transform-regenerator "^6.22.0"
+
+babel-preset-es2016@^6.22.0:
+  version "6.22.0"
+  resolved "https://registry.yarnpkg.com/babel-preset-es2016/-/babel-preset-es2016-6.22.0.tgz#b061aaa3983d40c9fbacfa3743b5df37f336156c"
+  dependencies:
+    babel-plugin-transform-exponentiation-operator "^6.22.0"
+
+babel-preset-es2017@^6.22.0:
+  version "6.22.0"
+  resolved "https://registry.yarnpkg.com/babel-preset-es2017/-/babel-preset-es2017-6.22.0.tgz#de2f9da5a30c50d293fb54a0ba15d6ddc573f0f2"
+  dependencies:
+    babel-plugin-syntax-trailing-function-commas "^6.22.0"
+    babel-plugin-transform-async-to-generator "^6.22.0"
 
 babel-preset-react@^6.22.0:
   version "6.22.0"
@@ -2503,9 +2524,9 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.3.6"
 
-kareem@1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/kareem/-/kareem-1.2.0.tgz#59851e833feb1ce6cf60000e0c23acf75c8a3547"
+kareem@1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/kareem/-/kareem-1.2.1.tgz#acdb8c8119845834abbfa58ade1cf9dea63dc752"
 
 kind-of@^3.0.2:
   version "3.1.0"
@@ -2842,20 +2863,20 @@ mongodb@2.2.22:
     mongodb-core "2.1.7"
     readable-stream "2.1.5"
 
-mongoose@^4.8.1:
-  version "4.8.1"
-  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-4.8.1.tgz#1dbd3014fb39e9344271a53ec5dd741205864aae"
+mongoose@^4.8.2:
+  version "4.8.2"
+  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-4.8.2.tgz#d65e9e620867435369e41fc220ede29664118c58"
   dependencies:
     async "2.1.4"
     bson "~1.0.4"
     hooks-fixed "1.2.0"
-    kareem "1.2.0"
+    kareem "1.2.1"
     mongodb "2.2.22"
     mpath "0.2.1"
     mpromise "0.5.5"
-    mquery "2.2.1"
+    mquery "2.2.3"
     ms "0.7.2"
-    muri "1.2.0"
+    muri "1.2.1"
     regexp-clone "0.0.1"
     sliced "1.0.1"
 
@@ -2867,9 +2888,9 @@ mpromise@0.5.5:
   version "0.5.5"
   resolved "https://registry.yarnpkg.com/mpromise/-/mpromise-0.5.5.tgz#f5b24259d763acc2257b0a0c8c6d866fd51732e6"
 
-mquery@2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/mquery/-/mquery-2.2.1.tgz#aa31076419adce2b06e9757f4cfc5d7f371b47ce"
+mquery@2.2.3:
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/mquery/-/mquery-2.2.3.tgz#a4703b64fb6734fce51d784a4df095cabf1a8f57"
   dependencies:
     bluebird "2.10.2"
     debug "2.2.0"
@@ -2890,9 +2911,9 @@ mumath@^3.0.0:
   dependencies:
     almost-equal "^1.1.0"
 
-muri@1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/muri/-/muri-1.2.0.tgz#b86383c902920b09ebe62af0e75c94de5f33cd3d"
+muri@1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/muri/-/muri-1.2.1.tgz#ec7ea5ce6ca6a523eb1ab35bacda5fa816c9aa3c"
 
 nan@^2.3.0, nan@^2.3.2, nan@^2.3.5:
   version "2.5.1"
