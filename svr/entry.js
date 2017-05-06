@@ -1,23 +1,23 @@
 import React from 'react';
 import { renderToString } from 'react-dom/server'
 import { Provider } from 'react-redux';
-import db from './lib/db.js';
+import db from './lib/db/index.js';
+import NewsStand from './lib/db/schema/NewsStandSchema.js';
 import configureStore from '../common/store/configureStore.js'
 import Root from '../common/components/Root.js';
 
 export default function handleRender(req, res) {
+
 	if(!db.connection.readyState) {
 		db.mongoose.connect('mongodb://localhost/mangrove');
 	}
 	
-	db.NewsStand.find({}, (err, docs) => {
-		if(err) return console.error(err);
-		let state = {};
-		if(docs.length) {
-			state = {
-				newsContainers: docs[0].newsContainers
-			};
-		}
+	NewsStand.fetchNewsContainers().then((newsContainers) => {
+
+		let state = {
+      newsContainers
+		};
+
 		const store = configureStore(state)
 		const preloadedState = store.getState();
 
@@ -25,9 +25,9 @@ export default function handleRender(req, res) {
 			<Root store={store} />
 		)
 
-
 		res.send(renderFullPage(html, preloadedState))
-	})	
+
+	});	
 }
 
 

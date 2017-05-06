@@ -11,7 +11,7 @@ const PATHS = {
 module.exports = {
   name: 'client',
   context: PATHS.dev,
-  devtool: 'eval-source-map',
+  devtool: 'cheap-source-map',
   entry: [
     'webpack-hot-middleware/client?reload=true',
     'react-hot-loader/patch',

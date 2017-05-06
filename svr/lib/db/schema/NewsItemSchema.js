@@ -8,7 +8,5 @@ export const newsItemSchema = new Schema({
   publishedDate: String,
   content: String,
   img: String,
-  itemId: Number,
-  containerId: Number,
   expanded: Boolean
 });

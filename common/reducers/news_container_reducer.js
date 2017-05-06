@@ -11,7 +11,7 @@ export const NEWS_ITEM_ACTION_CREATORS = {
   })
 }
 
-export const newsItem = (state = {}, action, itemId) => {
+export const newsItem = (state = {}, action, itemId, containerId) => {
   switch(action.type) {
     case UPDATE_NEWS_CONTAINER_SOURCES:
       return {
@@ -27,6 +27,19 @@ export const newsItem = (state = {}, action, itemId) => {
       return Object.assign({}, state, {
         expanded: !state.expanded 
       })
+    case UPDATE_NEWS_CONTAINER_INDICES:
+      return {
+        ...state,
+        containerId,
+        expanded: false
+      }
+    case FETCH_SOURCES:
+      return {
+        ...state,
+        containerId,
+        itemId,
+        expanded: false
+      }
     default:
       return state;
   }
@@ -34,8 +47,8 @@ export const newsItem = (state = {}, action, itemId) => {
 
 //NewsContainer Actions
 export const ADD_NEWS_CONTAINER = 'NEWSCONTAINER:ADD_NEWS_CONTAINER';
-export const DELETE_NEWS_CONTAINER = 'NEWSCONTAINER:DELETE_NEWS_CONTAINER';
 export const UPDATE_NEWS_CONTAINER_SOURCES = 'NEWSCONTAINER:UPDATE_NEWS_CONTAINER_SOURCES';
+export const UPDATE_NEWS_CONTAINER_INDICES = 'NEWSCONTAINER:UPDATE_NEWS_CONTAINER_INDICES';
 
 export const NEWS_CONTAINER_ACTION_CREATORS = {
   addNewsContainer: (url, nextId) => ({
@@ -44,10 +57,6 @@ export const NEWS_CONTAINER_ACTION_CREATORS = {
     url
   }),
 
-  deleteNewsContainer: (id) => ({
-    type: DELETE_NEWS_CONTAINER,
-    id: id
-  })
 }
 
 export const newsContainer = (state = {}, action, idx = -1) => {
@@ -76,7 +85,7 @@ export const newsContainer = (state = {}, action, idx = -1) => {
           ...state,
           loading: false,
           items: action.data.feed.entries.slice(0, state.maxHeadlines).map((item, idx) => {
-            return newsItem(item, action, idx) 
+            return newsItem(item, action, idx);
           })
         }
       } else {
@@ -86,15 +95,23 @@ export const newsContainer = (state = {}, action, idx = -1) => {
       return {
         ...state,
         items: state.items.map((item, idx) => {
-          return newsItem(item, action, idx)
+          return newsItem(item, action, idx);
         })
       };
-    case DELETE_NEWS_CONTAINER:
+    case UPDATE_NEWS_CONTAINER_INDICES:
       return {
         ...state,
         id: idx,
-        items: state.items.map((item, idx) => {
-          return newsItem(item, action, idx)
+        items: state.items.map((item, itemId) => {
+          return newsItem(item, action, itemId, idx);
+        })
+      }
+    case FETCH_SOURCES:
+      return {
+        ...state,
+        id: idx,
+        items: state.items.map((item, itemId) => {
+          return newsItem(item, action, itemId, idx);
         })
       }
     default:
@@ -102,7 +119,7 @@ export const newsContainer = (state = {}, action, idx = -1) => {
   }
 }
 
-export const FETCH_SAVED_SOURCES = 'NEWSSTAND:FETCH_SAVED_SOURCES';
+export const FETCH_SOURCES = 'NEWSSTAND:FETCH_SOURCES';
 export const newsContainers = (state = [], action) => {
   switch(action.type) {
     case ADD_NEWS_CONTAINER:
@@ -110,12 +127,6 @@ export const newsContainers = (state = [], action) => {
         ...state,
         newsContainer(undefined, action)
       ];
-    case DELETE_NEWS_CONTAINER:
-      return state.filter(n =>
-        n.id != action.id
-      ).map((n, idx) => {
-        newsContainer(n, action, idx); 
-      });
     case UPDATE_NEWS_CONTAINER_SOURCES:
       if (action.data.err) {
         console.error(`CONTAINER ERROR: could not get source for url ${action.data.url}`);
@@ -135,10 +146,18 @@ export const newsContainers = (state = [], action) => {
 			return state.map(n =>
 				newsContainer(n, action)
 			);
-    case FETCH_SAVED_SOURCES:
+    case FETCH_SOURCES:
       return [
         ...action.data.state
-      ]
+      ].map((n, idx) => {
+        return newsContainer(n, action, idx);
+      });
+    case UPDATE_NEWS_CONTAINER_INDICES:
+      return state.filter(n =>
+        n.id != action.data.id
+      ).map((n, idx) => {
+        return newsContainer(n, action, idx);
+      });
     default:
       return state;
   }

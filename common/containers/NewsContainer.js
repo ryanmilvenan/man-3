@@ -10,10 +10,11 @@ export class NewsContainer extends Component {
     this.props.refreshSource(this.props.globalState, this.props.id, this.props.url)
     setInterval(this.props.refreshSource, this.props.timeout, this.props.globalState, this.props.id, this.props.url)
 	}
+
 	render() {
     return (
       <div className="news-container">
-        <ContainerHeader title={this.props.url} />
+        <ContainerHeader title={this.props.url} onClick={() => this.props.deleteContainer(this.props.id)} />
 				{this.props.loading &&
 					<div className="loader"></div>
 				}
@@ -38,21 +39,8 @@ NewsContainer.propTypes = {
 }
 
 const mapStateToProps = (state, ownProps) => {
-	let id;
-	if(ownProps._doc) {
-		id = ownProps._doc && ownProps._doc.id
-	}
-	if(typeof ownProps.id == 'number') {
-		id = ownProps.id
-	}
-  let thisContainer = state.newsContainers[id] || {};
 	return {
-		id: thisContainer.id,
-		url: thisContainer.url,
-		maxHeadlines: thisContainer.maxHeadlines,
-		timeout: thisContainer.timeout,
-		loading: thisContainer.loading,
-		items: thisContainer.items,
+    ...state.newsContainers[ownProps.id],
 		globalState: state
 	}
 }

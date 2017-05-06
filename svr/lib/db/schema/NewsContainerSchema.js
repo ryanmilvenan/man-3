@@ -3,10 +3,10 @@ import { newsItemSchema } from './NewsItemSchema.js'
 const Schema = mongoose.Schema;
 
 export const newsContainerSchema = new Schema({
-  id: Number,
   url: String,
   maxHeadlines: Number,
   timeout: Number,
   items: [newsItemSchema],
   loading: Boolean
 });
+
