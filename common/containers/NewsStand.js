@@ -1,17 +1,32 @@
-import React, { PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { SOCKET_EVENTS_ACTION_CREATORS } from 'reducers/socket_io_reducer';
 import NewsContainer from './NewsContainer.js'
 
-let NewsStand = ({ newsContainers }) => (
-  <div className="news-stand">
-    {newsContainers.map(newsContainer => 
-      <NewsContainer
-        key={newsContainer.id}
-        {...newsContainer}
-      />
-		)}
-  </div>
-);
+export class NewsStand extends Component {
+
+  componentDidUpdate(prevProps, prevState) {
+    if(this.props.newsContainers !== prevProps.newsContainers
+      && this.props.newsContainers.length) {
+      this.props.persistState(this.props.newsContainers);
+    }
+  }
+
+  render() {
+    return (
+      <div className="news-stand">
+        {this.props.newsContainers.map((newsContainer, id) =>
+          <NewsContainer
+            key={id}
+            {...newsContainer}
+          />
+        )}
+      </div>
+    )
+  }
+
+}
 
 NewsStand.propTypes = {
   newsContainers: PropTypes.arrayOf(PropTypes.shape({
@@ -27,8 +42,13 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
+const mapDispatchToProps = {
+  ...SOCKET_EVENTS_ACTION_CREATORS
+}
+
 NewsStand = connect(
-  mapStateToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(NewsStand)
 
 

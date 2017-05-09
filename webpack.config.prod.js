@@ -16,6 +16,7 @@ module.exports = [
   {
     name: 'client',
     context: PATHS.client,
+    devtool: 'cheap-source-map',
     entry: {
       main:'./index.js',
       vendor: Object.keys(pkg.dependencies)
@@ -38,13 +39,13 @@ module.exports = [
 				},	
 				{
 					test: /\.css$/,
-					loader: extractCSS.extract({ fallbackLoader: 'style-loader', loader:'css-loader?minimize=true' })
+					loader: extractCSS.extract({ fallback: 'style-loader', use:'css-loader?minimize=true' })
 				},	
         {
           test: /\.scss$/,
           loader: extractSASS.extract({
-            fallbackLoader: 'style-loader',
-            loader: "css-loader?minimize=true!sass-loader"
+            fallback: 'style-loader',
+            use: "css-loader?minimize=true!sass-loader"
           })
         },
         {
@@ -108,13 +109,13 @@ module.exports = [
 				},	
 				{
 					test: /\.css$/,
-					loader: extractCSS.extract({ fallbackLoader: 'style-loader', loader:'css-loader?minimize=true' })
+					loader: extractCSS.extract({ fallback: 'style-loader', use:'css-loader?minimize=true' })
 				},	
         {
           test: /\.scss$/,
           loader: extractSASS.extract({
-            fallbackLoader: 'style-loader',
-            loader: "css-loader?minimize=true!sass-loader"
+            fallback: 'style-loader',
+            use: "css-loader?minimize=true!sass-loader"
           })
         },
         {

@@ -1,4 +1,5 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { SOCKET_EVENTS_ACTION_CREATORS } from 'reducers/socket_io_reducer';
 import { NEWS_ITEM_ACTION_CREATORS } from 'reducers/news_container_reducer';
@@ -7,8 +8,8 @@ import ContainerHeader from 'components/ContainerHeader';
 
 export class NewsContainer extends Component {
 	componentDidMount() {
-    this.props.refreshSource(this.props.globalState, this.props.id, this.props.url)
-    setInterval(this.props.refreshSource, this.props.timeout, this.props.globalState, this.props.id, this.props.url)
+    this.props.refreshSource(this.props);
+    setInterval(this.props.refreshSource, this.props.timeout, this.props)
 	}
 
 	render() {
@@ -39,10 +40,7 @@ NewsContainer.propTypes = {
 }
 
 const mapStateToProps = (state, ownProps) => {
-	return {
-    ...state.newsContainers[ownProps.id],
-		globalState: state
-	}
+  return ownProps;
 }
 
 const mapDispatchToProps = {

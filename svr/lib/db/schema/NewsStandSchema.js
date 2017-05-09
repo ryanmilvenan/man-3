@@ -7,26 +7,26 @@ const newsStandSchema = new Schema({
   newsContainers: [newsContainerSchema]
 });
 
-newsStandSchema.statics.refreshSources = async (data) => {
-  let docs, newsStand;
+
+newsStandSchema.statics.persistState = async (data) => {
+  let docs, containers;
   try {
     docs = await NewsStand.find({}); 
   } catch (err) {
-    console.error(`ERROR FINDING SOURCES DURING REFRESH: ${err}`) 
+    console.error(`ERROR FINDING SOURCES DURING PERSIST: ${err}`)
   }
 
   if(!docs.length) {
-    newsStand = new NewsStand(data);
+    containers = new NewsStand(data);
   } else {
-    let currentState = docs[0];
-    currentState.newsContainers = data.newsContainers;
-    newsStand = currentState;
+    containers = docs[0];
+    containers.newsContainers = data;
   }
 
   try {
-    return await newsStand.save();
+    return await containers.save();
   } catch (err) {
-    console.error(`ERROR SAVING SOURCES DURING REFRESH: ${err}`) 
+    console.error(`ERROR SAVING SOURCES DURING PERSIST: ${err}`)
   }
 }
 
@@ -35,7 +35,7 @@ newsStandSchema.statics.fetchNewsContainers = async () => {
   try {
     docs = await NewsStand.find({}); 
   } catch (err) {
-    console.error(`ERROR FINDING SOURCES DURING FETCH: ${err}`) 
+    console.error(`ERROR FINDING SOURCES DURING FETCH: ${err}`)
   }
 
   if(!docs.length) {
@@ -43,7 +43,10 @@ newsStandSchema.statics.fetchNewsContainers = async () => {
     return containers;
   } else {
     let currentState = docs[0];
-    return currentState.newsContainers;
+    const newsContainers = currentState.newsContainers.map(n =>
+      n.toObject()
+    );
+    return newsContainers;
   }
 }
 
@@ -52,7 +55,7 @@ newsStandSchema.statics.deleteNewsContainer = async (id) => {
   try {
     docs = await NewsStand.find({});
   } catch (err) {
-    console.error(`ERROR FINDING SOURCES DURING DELETE: ${err}`) 
+    console.error(`ERROR FINDING SOURCES DURING DELETE: ${err}`)
     return [];
   }
 
@@ -67,54 +70,16 @@ newsStandSchema.statics.deleteNewsContainer = async (id) => {
   try {
     return await currentState.save();
   } catch (err) {
-    console.error(`ERROR SAVING SOURCES DURING DELETE: ${err}`) 
+    console.error(`ERROR SAVING SOURCES DURING DELETE: ${err}`)
     return [];
   }
 }
 
-newsStandSchema.statics.saveProcessedEntries = async (entries, id) => {
-  let docs, currentState;
-  try {
-    docs = await NewsStand.find({});
-  } catch (err) {
-    console.error(`ERROR FINDING SOURCES DURING REFRESH: ${err}`) 
-    return {};
-  }
-
-
-  let newsStand = docs[0];
-  const container = newsStand.newsContainers[id] || {};
-  const newContainer = Object.assign(
-    container,
-    {
-      ...container,
-      items: entries
-    }
-  );
-
-  if(newsStand.newsContainers[id]) {
-    newsStand.newsContainers = [
-      ...newsStand.newsContainers.slice(0, id),
-      newContainer,
-      ...newsStand.newsContainers.slice(id + 1)
-    ];
-  } else {
-    newsStand.newsContainers = [
-      ...newsStand.newsContainers,
-      newContainer
-    ];
-  }
-
-  try {
-    return await newsStand.save();
-  } catch (err) {
-    console.error(`ERROR SAVING SOURCES DURING REFRESH: ${err}`) 
-    return {};
-  }
-
+let NewsStand;
+if(mongoose.models.NewsStand) {
+  NewsStand = mongoose.model('NewsStand');
+} else {
+  NewsStand = mongoose.model("NewsStand", newsStandSchema);
 }
-
-
-const NewsStand = mongoose.model("NewsStand", newsStandSchema);
 
 export default NewsStand;
