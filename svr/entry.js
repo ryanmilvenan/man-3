@@ -11,23 +11,23 @@ export default function handleRender(req, res) {
 	if(!db.connection.readyState) {
 		db.mongoose.connect('mongodb://localhost/mangrove');
 	}
-	
-	NewsStand.fetchNewsContainers().then((newsContainers) => {
 
-		let state = {
+  NewsStand.fetchNewsContainers().then((newsContainers) => {
+    let state = {
       newsContainers
-		};
+    };
 
-		const store = configureStore(state)
-		const preloadedState = store.getState();
+    const store = configureStore(state)
+    const preloadedState = store.getState();
 
-		const html = renderToString(
-			<Root store={store} />
-		)
+    const html = renderToString(
+      <Root store={store} />
+    )
 
-		res.send(renderFullPage(html, preloadedState))
+    res.send(renderFullPage(html, preloadedState))
 
-	});	
+  });
+
 }
 
 

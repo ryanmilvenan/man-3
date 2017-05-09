@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { NEWS_ITEM_ACTION_CREATORS } from 'reducers/news_container_reducer';
 
@@ -36,9 +37,7 @@ NewsItem.propTypes = {
 }
 
 const mapStateToProps = (state, ownProps) => {
-	return {
-    ...state.newsContainers[ownProps.containerId].items[ownProps.itemId]
-	}
+  return ownProps;
 }
 
 const mapDispatchToProps = {
