@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import { newsContainerSchema } from './NewsContainerSchema.js';
-import { processEntries } from '../../parser.js';
 const Schema = mongoose.Schema;
 
 const newsStandSchema = new Schema({
