@@ -8,12 +8,12 @@ export class NewsStand extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if(this.props.newsContainers !== prevProps.newsContainers
-      && this.props.newsContainers.length && newsContainersAdded(prevProps)) {
+      && this.props.newsContainers.length && this.newsContainersAdded(prevProps)) {
       this.props.persistState(this.props.newsContainers);
     }
   }
 
-  newContainersAdded(prevProps) {
+  newsContainersAdded(prevProps) {
     return prevProps.newsContainers.length !== this.props.newsContainers.length;
   }
 
