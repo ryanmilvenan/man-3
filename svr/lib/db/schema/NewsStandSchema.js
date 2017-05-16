@@ -75,11 +75,6 @@ newsStandSchema.statics.deleteNewsContainer = async (id) => {
   }
 }
 
-let NewsStand;
-if(mongoose.models.NewsStand) {
-  NewsStand = mongoose.model('NewsStand');
-} else {
-  NewsStand = mongoose.model("NewsStand", newsStandSchema);
-}
+const NewsStand = mongoose.model("NewsStand", newsStandSchema);
 
 export default NewsStand;

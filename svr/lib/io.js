@@ -2,9 +2,9 @@
 import { server } from '../app.js';
 import reader from 'feed-reader';
 import { processEntries } from './parser.js';
-import NewsStand from './db/schema/NewsStandSchema.js';
 import socketIo from 'socket.io';
 import db from './db/index.js';
+import NewsStand from './db/schema/NewsStandSchema.js';
 
 import { REFRESH_SOURCE, FETCH_STATE, DELETE_CONTAINER, PERSIST_STATE } from '../../common/reducers/socket_io_reducer.js';
 
