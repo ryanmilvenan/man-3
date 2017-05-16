@@ -80,10 +80,11 @@ export const newsContainer = (state = {}, action, idx = -1) => {
         return state;
       }	
     case UPDATE_NEWS_CONTAINER_SOURCES:
-      if(action.data.id == state.id && action.data.feed) {
+      if(action.data.id == idx && action.data.feed) {
         return {
           ...state,
           loading: false,
+          id: idx,
           items: action.data.feed.entries.slice(0, state.maxHeadlines).map((item, idx) => {
             return newsItem(item, action, idx);
           })
@@ -110,6 +111,7 @@ export const newsContainer = (state = {}, action, idx = -1) => {
       return {
         ...state,
         id: idx,
+        loading: false,
         items: state.items.map((item, itemId) => {
           return newsItem(item, action, itemId, idx);
         })
@@ -134,8 +136,8 @@ export const newsContainers = (state = [], action) => {
           n.id != action.data.id
         );
       } else {
-        return state.map(n =>
-          newsContainer(n, action) 
+        return state.map((n, idx) =>
+          newsContainer(n, action, idx) 
         );
       }
     case TOGGLE_DETAIL_EXPAND:

@@ -23,6 +23,7 @@ export class NewsStand extends Component {
         {this.props.newsContainers.map((newsContainer, id) =>
           <NewsContainer
             key={id}
+            id={id}
             {...newsContainer}
           />
         )}
