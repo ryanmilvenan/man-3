@@ -31,7 +31,7 @@ io.on('connection', (socket) => {
             feed.entries = processEntries(feed.entries);
             socket.emit('action', {type: UPDATE_NEWS_CONTAINER_SOURCES, data: {id, url, feed, err: null}});
           }).catch((err) => {
-            console.error("ERROR", err)
+            console.error("ERROR REFRESHING SOURCE", err)
             socket.emit('action', {type: UPDATE_NEWS_CONTAINER_SOURCES, data: {id, url, feed: null, err}});
           });
           break;
