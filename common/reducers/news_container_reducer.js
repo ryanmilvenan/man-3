@@ -1,16 +1,5 @@
 import { REFRESH_SOURCE } from './socket_io_reducer.js';
 
-//NewsItem Actions
-export const TOGGLE_DETAIL_EXPAND = 'NEWSITEM:TOGGLE_DETAIL_EXPAND';
-
-export const NEWS_ITEM_ACTION_CREATORS = {
-  toggleExpand: (containerId, itemId) => ({
-    type: TOGGLE_DETAIL_EXPAND,
-    containerId,
-    itemId
-  })
-}
-
 export const newsItem = (state = {}, action, itemId, containerId) => {
   switch(action.type) {
     case UPDATE_NEWS_CONTAINER_SOURCES:
@@ -18,27 +7,17 @@ export const newsItem = (state = {}, action, itemId, containerId) => {
         ...state,
         itemId,
         containerId: action.data.id,
-        expanded: false
       }
-    case TOGGLE_DETAIL_EXPAND:
-      if(state.itemId !== action.itemId || state.containerId !== action.containerId) {
-        return state;
-      }
-      return Object.assign({}, state, {
-        expanded: !state.expanded 
-      })
     case UPDATE_NEWS_CONTAINER_INDICES:
       return {
         ...state,
         containerId,
-        expanded: false
       }
     case FETCH_SOURCES:
       return {
         ...state,
         containerId,
         itemId,
-        expanded: false
       }
     default:
       return state;
@@ -92,13 +71,6 @@ export const newsContainer = (state = {}, action, idx = -1) => {
       } else {
         return state; 
       }
-    case TOGGLE_DETAIL_EXPAND:
-      return {
-        ...state,
-        items: state.items.map((item, idx) => {
-          return newsItem(item, action, idx);
-        })
-      };
     case UPDATE_NEWS_CONTAINER_INDICES:
       return {
         ...state,
@@ -140,10 +112,6 @@ export const newsContainers = (state = [], action) => {
           newsContainer(n, action, idx) 
         );
       }
-    case TOGGLE_DETAIL_EXPAND:
-      return state.map(n => 
-        newsContainer(n, action) 
-      );
 		case REFRESH_SOURCE:
 			return state.map(n =>
 				newsContainer(n, action)

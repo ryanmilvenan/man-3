@@ -1,8 +1,15 @@
 import { combineReducers } from 'redux';
-import { newsItem, newsContainer, newsContainers } from './news_container_reducer';
+import { newsContainers } from './news_container_reducer';
+import { appState, initialAppState } from './app_state_reducer';
 
 const rootReducer = combineReducers({
-  newsContainers
+  newsContainers,
+  appState
 });
+
+export const initialState = Object.assign(
+  {},
+  initialAppState,
+);
 
 export default rootReducer;

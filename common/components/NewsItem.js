@@ -1,26 +1,36 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { NEWS_ITEM_ACTION_CREATORS } from 'reducers/news_container_reducer';
+import {Card, CardMedia, CardHeader, CardText} from 'material-ui/Card';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+injectTapEventPlugin()
 
-let NewsItem = ({ title, content, link, expanded, onClick, img, raw_html }) => {
+
+let NewsItem = ({ title, content, link, img, raw_html }) => {
   return (
     <div className="news-item">
-      <i 
-        className={expanded ? "fa fa-minus-square-o" : "fa fa-plus-square-o"}
-        aria-hidden="true" 
-        onClick={onClick}>
-      </i>
-      <a href={link}>{title}</a>
-      {expanded && 
-        <div className="content">
-          {raw_html ?
+      <Card
+        style={{paddingBottom: '10px'}}
+      >
+        <CardHeader
+          subtitle={title}
+          actAsExpander={true}
+          showExpandableButton={true}
+          onClick={() => {window.open(link, "_self", true)}}
+        />
+        {raw_html ?
+          <CardMedia 
+            expandable={true}
+          >
             <div className="table-data" dangerouslySetInnerHTML={raw_html} />
-            :
+          </CardMedia>
+          :
+          <CardText
+            expandable={true}>
             <p>{content}</p>
-          }
-        </div>
-      }
+          </CardText>
+        }
+      </Card>
     </div>
 )}
 
@@ -29,22 +39,15 @@ NewsItem.propTypes = {
   containerId: PropTypes.number.isRequired,
   title: PropTypes.string.isRequired,
   link: PropTypes.string.isRequired,
-  expanded: PropTypes.bool.isRequired,
   content: PropTypes.string,
   img: PropTypes.string,
   raw_html: PropTypes.object,
-  onClick: PropTypes.func
 }
 
 const mapStateToProps = (state, ownProps) => {
   return ownProps;
 }
 
-const mapDispatchToProps = {
-  ...NEWS_ITEM_ACTION_CREATORS  
-}
-
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
 )(NewsItem);

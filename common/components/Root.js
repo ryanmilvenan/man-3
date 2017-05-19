@@ -4,12 +4,14 @@ import { Provider } from 'react-redux';
 import configureStore from '../store/configureStore.js'
 import NewsStand from '../containers/NewsStand.js'
 import AddNewsContainer from '../containers/AddNewsContainer.js'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 const Root = ({ store }) => (
   <Provider store={store}>
     <div>
-			<AddNewsContainer />
-      <NewsStand />
+      <MuiThemeProvider>
+        <NewsStand />
+      </MuiThemeProvider>
     </div>
   </Provider>
 );

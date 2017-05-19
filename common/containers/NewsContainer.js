@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { SOCKET_EVENTS_ACTION_CREATORS } from 'reducers/socket_io_reducer';
-import { NEWS_ITEM_ACTION_CREATORS } from 'reducers/news_container_reducer';
 import NewsItem from 'components/NewsItem';
-import ContainerHeader from 'components/ContainerHeader';
+import CircularProgress from 'material-ui/CircularProgress';
+import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
+import Paper from 'material-ui/Paper';
+
 
 export class NewsContainer extends Component {
 	componentDidMount() {
@@ -14,19 +16,34 @@ export class NewsContainer extends Component {
 
 	render() {
     return (
-      <div className="news-container">
-        <ContainerHeader title={this.props.url} onClick={() => this.props.deleteContainer(this.props.id)} />
-				{this.props.loading &&
-					<div className="loader"></div>
-				}
-        {!this.props.loading && this.props.items.map((item, idx) => 
+     <div className="news-container">
+      <Toolbar>
+        <ToolbarTitle
+          text={this.props.url}
+        />
+      </Toolbar>
+      <Paper
+        zDepth={3}
+        style={{display: 'flex', flexDirection: 'column'}}
+      >
+        {this.props.loading ? 
+          <CircularProgress 
+            size={120}
+            style={{
+              alignSelf: 'center',
+              marginTop: '3rem',
+              marginBottom: '3rem',
+            }}
+            />
+        : 
+        this.props.items.map((item, idx) => 
           <NewsItem
             key={idx}
             {...item}
-            onClick={() => this.props.toggleExpand(item.containerId, idx)}
           />
         )}
-      </div>
+      </Paper>
+     </div>
     )
 	}
 }
@@ -45,7 +62,6 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = {
   ...SOCKET_EVENTS_ACTION_CREATORS,
-  ...NEWS_ITEM_ACTION_CREATORS
 }
 
 export default connect(

@@ -1,6 +1,6 @@
 import { createStore, compose, applyMiddleware } from 'redux';
 import { persistState } from 'redux-devtools';
-import rootReducer from '../common/reducers/index.js';
+import rootReducer, { initialState } from '../common/reducers/index.js';
 import DevTools from './DevTools.js';
 import createSocketIoMiddleware from 'redux-socket.io';
 import io from 'socket.io-client';
@@ -16,9 +16,12 @@ export default function configureStore(preloadedState) {
     ),
     DevTools.instrument()
   )
+
+  const combinedState = Object.assign(initialState, preloadedState);
+
   const store = createStore(
     rootReducer,
-    preloadedState,
+    combinedState,
 		enhancer,
   )
 

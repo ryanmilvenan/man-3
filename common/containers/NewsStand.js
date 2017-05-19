@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { SOCKET_EVENTS_ACTION_CREATORS } from 'reducers/socket_io_reducer';
-import NewsContainer from './NewsContainer.js'
+import { APP_STATE_ACTION_CREATORS } from 'reducers/app_state_reducer';
+import NewsContainer from './NewsContainer';
+import SideMenu from '../components/SideMenu';
+import AppBar from 'material-ui/AppBar';
 
 export class NewsStand extends Component {
 
@@ -20,6 +23,11 @@ export class NewsStand extends Component {
   render() {
     return (
       <div className="news-stand">
+        <AppBar 
+          title="Homepage 3.0"
+          onTitleTouchTap={() => this.props.toggleDrawer()}
+          showMenuIconButton={false}
+        />
         {this.props.newsContainers.map((newsContainer, id) =>
           <NewsContainer
             key={id}
@@ -27,6 +35,9 @@ export class NewsStand extends Component {
             {...newsContainer}
           />
         )}
+        <SideMenu
+          {...this.props.appState}
+        />
       </div>
     )
   }
@@ -43,12 +54,14 @@ NewsStand.propTypes = {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    newsContainers: state.newsContainers
+    newsContainers: state.newsContainers,
+    appState: state.appState
   }
 }
 
 const mapDispatchToProps = {
-  ...SOCKET_EVENTS_ACTION_CREATORS
+  ...SOCKET_EVENTS_ACTION_CREATORS,
+  ...APP_STATE_ACTION_CREATORS
 }
 
 NewsStand = connect(

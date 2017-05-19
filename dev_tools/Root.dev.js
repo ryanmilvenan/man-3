@@ -5,13 +5,15 @@ import configureStore from './configureStore.dev.js'
 import DevTools from './DevTools.js'
 import NewsStand from '../common/containers/NewsStand.js'
 import AddNewsContainer from '../common/containers/AddNewsContainer.js'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 const Root = ({ store }) => (
   <Provider store={store}>
     <div>
 			<DevTools />
-			<AddNewsContainer />
-      <NewsStand />
+      <MuiThemeProvider>
+        <NewsStand />
+      </MuiThemeProvider>
     </div>
   </Provider>
 );

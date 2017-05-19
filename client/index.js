@@ -3,7 +3,6 @@ import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import configureStore from '../common/store/configureStore.js'
 import Root from '../common/components/Root';
-import 'font-awesome/css/font-awesome.css';
 import 'sass/main.scss';
 
 const preloadedState = window.__PRELOADED_STATE__ ? window.__PRELOADED_STATE__ : {};
