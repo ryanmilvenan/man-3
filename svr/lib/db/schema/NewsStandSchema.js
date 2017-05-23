@@ -74,6 +74,51 @@ newsStandSchema.statics.deleteNewsContainer = async (id) => {
   }
 }
 
+newsStandSchema.statics.rearrangeContainer = async (id, direction) => {
+  let docs, currentState;
+  try {
+    docs = await NewsStand.find({});
+  } catch (err) {
+    console.error(`ERROR FINDING SOURCES DURING DELETE: ${err}`)
+    return [];
+  }
+  
+  currentState = docs[0];
+  const { left, right } = direction;
+  if(left) {
+    if(id === 0) {
+      return [];
+    }
+
+    if(currentState.newsContainers[id]) {
+      currentState.newsContainers = [
+        ...currentState.newsContainers.slice(0, id - 1),
+        ...currentState.newsContainers.slice(id, id + 1),
+        ...currentState.newsContainers.slice(id - 1, id),
+        ...currentState.newsContainers.slice(id + 1)
+      ]
+    }
+
+  } else if(right) {
+    if(id === currentState.newsContainers.length - 1) {
+      return [];
+    }
+    currentState.newsContainers = [
+      ...currentState.newsContainers.slice(0, id),
+      ...currentState.newsContainers.slice(id + 1, id + 2),
+      ...currentState.newsContainers.slice(id, id + 1),
+      ...currentState.newsContainers.slice(id + 2)
+    ]
+  }
+
+  try {
+    return await currentState.save();
+  } catch (err) {
+    console.error(`ERROR SAVING SOURCES DURING DELETE: ${err}`)
+    return [];
+  }
+}
+
 const NewsStand = mongoose.model("NewsStand", newsStandSchema);
 
 export default NewsStand;

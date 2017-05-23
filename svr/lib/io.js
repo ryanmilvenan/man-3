@@ -6,12 +6,13 @@ import socketIo from 'socket.io';
 import db from './db/index.js';
 import NewsStand from './db/schema/NewsStandSchema.js';
 
-import { REFRESH_SOURCE, FETCH_STATE, DELETE_CONTAINER, PERSIST_STATE } from '../../common/reducers/socket_io_reducer.js';
+import { REFRESH_SOURCE, FETCH_STATE, DELETE_CONTAINER, PERSIST_STATE, REARRANGE_CONTAINER } from '../../common/reducers/socket_io_reducer.js';
 
 //Events
 import { 
   UPDATE_NEWS_CONTAINER_SOURCES, 
   UPDATE_NEWS_CONTAINER_INDICES, 
+  REARRANGE_NEWS_CONTAINER_INDICES,
   FETCH_SOURCES } from '../../common/reducers/news_container_reducer.js';
 
 const io = socketIo(server);
@@ -53,6 +54,14 @@ io.on('connection', (socket) => {
         case DELETE_CONTAINER:
           NewsStand.deleteNewsContainer(action.id).then(() => {
             socket.emit('action', {type: UPDATE_NEWS_CONTAINER_INDICES, data: {id: action.id}});
+          }).catch((err) => {
+            console.error(`ERROR DELETING ITEM ${action.id}: ${err}`)
+          });
+          break;
+
+        case REARRANGE_CONTAINER:
+          NewsStand.rearrangeContainer(action.id, action.direction).then(() => {
+            socket.emit('action', {type: REARRANGE_NEWS_CONTAINER_INDICES, data: { id:action.id, direction: action.direction}});
           }).catch((err) => {
             console.error(`ERROR DELETING ITEM ${action.id}: ${err}`)
           });

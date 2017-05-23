@@ -8,7 +8,18 @@ export const newsItem = (state = {}, action, itemId, containerId) => {
         itemId,
         containerId: action.data.id,
       }
+    case CHANGE_MAX_HEADLINES:
+      return {
+        ...state,
+        itemId,
+        containerId: action.id,
+      }
     case UPDATE_NEWS_CONTAINER_INDICES:
+      return {
+        ...state,
+        containerId,
+      }
+    case REARRANGE_NEWS_CONTAINER_INDICES:
       return {
         ...state,
         containerId,
@@ -26,31 +37,80 @@ export const newsItem = (state = {}, action, itemId, containerId) => {
 
 //NewsContainer Actions
 export const ADD_NEWS_CONTAINER = 'NEWSCONTAINER:ADD_NEWS_CONTAINER';
+export const TOGGLE_CONFIGURE_MODE = 'NEWSCONTAINER:TOGGLE_CONFIGURE_MODE';
+export const CHANGE_MAX_HEADLINES = 'NEWSCONTAINER:CHANGE_MAX_HEADLINES';
+export const CHANGE_TITLE = 'NEWSCONTAINER:CHANGE_TITLE';
 export const UPDATE_NEWS_CONTAINER_SOURCES = 'NEWSCONTAINER:UPDATE_NEWS_CONTAINER_SOURCES';
 export const UPDATE_NEWS_CONTAINER_INDICES = 'NEWSCONTAINER:UPDATE_NEWS_CONTAINER_INDICES';
+export const REARRANGE_NEWS_CONTAINER_INDICES = 'NEWSCONTAINER:REARRANGE_NEWS_CONTAINER_INDICES';
 
 export const NEWS_CONTAINER_ACTION_CREATORS = {
-  addNewsContainer: (url, nextId) => ({
+  addNewsContainer: (title, url, nextId) => ({
     type: ADD_NEWS_CONTAINER,
     id: nextId,
+    title,
     url
   }),
-
+  toggleConfigureMode: (id) => ({
+    type: TOGGLE_CONFIGURE_MODE,
+		id
+  }),
+  changeMaxHeadlines: (id, number) => ({
+    type: CHANGE_MAX_HEADLINES,
+    id,
+    number
+  }),
+  changeTitle: (id, title) => ({
+    type: CHANGE_TITLE,
+    id,
+    title
+  }),
 }
 
 export const newsContainer = (state = {}, action, idx = -1) => {
+  const { id, url, title, number } = action;
   switch(action.type) {
     case ADD_NEWS_CONTAINER:
       return {
-        id: action.id,
-        url: action.url,
+        id,
+        url,
+        title,
         maxHeadlines: 10,
         timeout: (1000 * 60 * 10),
         items: [],
-        loading: true
+        allItems: [],
+        loading: true,
+        configureMode: false
+      }
+		case TOGGLE_CONFIGURE_MODE:
+      if(id === state.id) {
+        return Object.assign({}, state, {
+          configureMode: !state.configureMode
+        });
+      } else {
+        return state;
+      }
+		case CHANGE_MAX_HEADLINES:
+      if(id === state.id) {
+        return Object.assign({}, state, {
+          maxHeadlines: number,
+          items: state.allItems.slice(0, number).map((item, idx) => {
+            return newsItem(item, action, idx);
+          })
+        });
+      } else {
+        return state;
+      }
+		case CHANGE_TITLE:
+      if(id === state.id) {
+        return Object.assign({}, state, {
+          title
+        });
+      } else {
+        return state;
       }
     case REFRESH_SOURCE:
-      if(action.id == state.id) {
+      if(id == state.id) {
         return {
           ...state,
           loading: true
@@ -60,18 +120,44 @@ export const newsContainer = (state = {}, action, idx = -1) => {
       }	
     case UPDATE_NEWS_CONTAINER_SOURCES:
       if(action.data.id == idx && action.data.feed) {
-        return {
-          ...state,
-          loading: false,
-          id: idx,
-          items: action.data.feed.entries.slice(0, state.maxHeadlines).map((item, idx) => {
-            return newsItem(item, action, idx);
-          })
+        let items, allItems;
+        if(action.data.err && state.items) {
+          items = state.items;
+          allItems = state.items
+          return {
+            ...state,
+            loading: false,
+            id: idx,
+            allItems,
+            items
+          }
+        } else if(!action.data.err) {
+          items = action.data.feed.entries.slice(0, state.maxHeadlines);
+          allItems = action.data.feed.entries;
+          return {
+            ...state,
+            loading: false,
+            id: idx,
+            allItems,
+            items: items.map((item, idx) => {
+              return newsItem(item, action, idx);
+            })
+          }
+        } else {
+          return state;
         }
       } else {
         return state; 
       }
     case UPDATE_NEWS_CONTAINER_INDICES:
+      return {
+        ...state,
+        id: idx,
+        items: state.items.map((item, itemId) => {
+          return newsItem(item, action, itemId, idx);
+        })
+      }
+    case REARRANGE_NEWS_CONTAINER_INDICES:
       return {
         ...state,
         id: idx,
@@ -104,15 +190,23 @@ export const newsContainers = (state = [], action) => {
     case UPDATE_NEWS_CONTAINER_SOURCES:
       if (action.data.err) {
         console.error(`CONTAINER ERROR: could not get source for url ${action.data.url}`);
-        return state.filter(n =>
-          n.id != action.data.id
-        );
-      } else {
-        return state.map((n, idx) =>
-          newsContainer(n, action, idx) 
-        );
       }
+      return state.map((n, idx) =>
+        newsContainer(n, action, idx) 
+      );
 		case REFRESH_SOURCE:
+			return state.map(n =>
+				newsContainer(n, action)
+			);
+		case TOGGLE_CONFIGURE_MODE:
+			return state.map(n =>
+				newsContainer(n, action)
+			);
+		case CHANGE_MAX_HEADLINES:
+			return state.map(n =>
+				newsContainer(n, action)
+			);
+    case CHANGE_TITLE:
 			return state.map(n =>
 				newsContainer(n, action)
 			);
@@ -128,6 +222,35 @@ export const newsContainers = (state = [], action) => {
       ).map((n, idx) => {
         return newsContainer(n, action, idx);
       });
+    case REARRANGE_NEWS_CONTAINER_INDICES:
+      const { direction: { left, right }, id: rId } = action.data;
+      if(left) {
+        if(rId === 0) {
+          return state;
+        }
+        return [
+          ...state.slice(0, rId - 1),
+          ...state.slice(rId, rId + 1),
+          ...state.slice(rId - 1, rId),
+          ...state.slice(rId + 1)
+        ].map((n, idx) => {
+          return newsContainer(n, action, idx);
+        });
+      } else if(right) {
+        if(rId === state.length - 1) {
+          return state;
+        }
+        return [
+          ...state.slice(0, rId),
+          ...state.slice(rId + 1, rId + 2),
+          ...state.slice(rId, rId + 1),
+          ...state.slice(rId + 2)
+        ].map((n, idx) => {
+          return newsContainer(n, action, idx);
+        });
+      } else {
+        return state;
+      }
     default:
       return state;
   }

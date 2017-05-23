@@ -16,6 +16,12 @@ export class NewsStand extends Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    if(this.props.newsContainers !== prevProps.newsContainers) {
+      this.props.persistState(this.props.newsContainers);
+    }
+  }
+
   newsContainersAdded(prevProps) {
     return prevProps.newsContainers.length !== this.props.newsContainers.length;
   }
@@ -25,7 +31,10 @@ export class NewsStand extends Component {
       <div className="news-stand">
         <AppBar 
           title="Homepage 3.0"
-          onTitleTouchTap={() => this.props.toggleDrawer()}
+          onTitleTouchTap={() => {
+            this.props.resetTextFields();
+            this.props.toggleDrawer();
+          }}
           showMenuIconButton={false}
         />
         {this.props.newsContainers.map((newsContainer, id) =>

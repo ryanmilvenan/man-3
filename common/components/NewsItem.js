@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {Card, CardMedia, CardHeader, CardText} from 'material-ui/Card';
-import injectTapEventPlugin from 'react-tap-event-plugin';
-injectTapEventPlugin()
 
 
 let NewsItem = ({ title, content, link, img, raw_html }) => {

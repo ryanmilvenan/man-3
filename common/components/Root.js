@@ -5,6 +5,8 @@ import configureStore from '../store/configureStore.js'
 import NewsStand from '../containers/NewsStand.js'
 import AddNewsContainer from '../containers/AddNewsContainer.js'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+injectTapEventPlugin()
 
 const Root = ({ store }) => (
   <Provider store={store}>
