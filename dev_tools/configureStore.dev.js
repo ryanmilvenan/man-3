@@ -12,7 +12,7 @@ export default function configureStore(preloadedState) {
   const socketIoMiddleware = createSocketIoMiddleware(socket, "SERVER:");
   
   const debounceConfig = {
-    db: 400
+    db: 500
   }
 
   let debouncer = createDebounce(debounceConfig);

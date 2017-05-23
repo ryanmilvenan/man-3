@@ -38,6 +38,7 @@ export const newsItem = (state = {}, action, itemId, containerId) => {
 //NewsContainer Actions
 export const ADD_NEWS_CONTAINER = 'NEWSCONTAINER:ADD_NEWS_CONTAINER';
 export const TOGGLE_CONFIGURE_MODE = 'NEWSCONTAINER:TOGGLE_CONFIGURE_MODE';
+export const DISABLE_CONFIGURE_MODE = 'NEWSCONTAINER:DISABLE_CONFIGURE_MODE';
 export const CHANGE_MAX_HEADLINES = 'NEWSCONTAINER:CHANGE_MAX_HEADLINES';
 export const CHANGE_TITLE = 'NEWSCONTAINER:CHANGE_TITLE';
 export const UPDATE_NEWS_CONTAINER_SOURCES = 'NEWSCONTAINER:UPDATE_NEWS_CONTAINER_SOURCES';
@@ -65,6 +66,9 @@ export const NEWS_CONTAINER_ACTION_CREATORS = {
     id,
     title
   }),
+  resetContainerState: () => ({
+    type: DISABLE_CONFIGURE_MODE
+  })
 }
 
 export const newsContainer = (state = {}, action, idx = -1) => {
@@ -90,6 +94,10 @@ export const newsContainer = (state = {}, action, idx = -1) => {
       } else {
         return state;
       }
+		case DISABLE_CONFIGURE_MODE:
+      return Object.assign({}, state, {
+        configureMode: false
+      });
 		case CHANGE_MAX_HEADLINES:
       if(id === state.id) {
         return Object.assign({}, state, {
@@ -182,6 +190,14 @@ export const newsContainer = (state = {}, action, idx = -1) => {
 export const FETCH_SOURCES = 'NEWSSTAND:FETCH_SOURCES';
 export const newsContainers = (state = [], action) => {
   switch(action.type) {
+		case REFRESH_SOURCE:
+		case TOGGLE_CONFIGURE_MODE:
+    case DISABLE_CONFIGURE_MODE:
+		case CHANGE_MAX_HEADLINES:
+    case CHANGE_TITLE:
+			return state.map(n =>
+				newsContainer(n, action)
+			);
     case ADD_NEWS_CONTAINER:
       return [
         ...state,
@@ -194,22 +210,6 @@ export const newsContainers = (state = [], action) => {
       return state.map((n, idx) =>
         newsContainer(n, action, idx) 
       );
-		case REFRESH_SOURCE:
-			return state.map(n =>
-				newsContainer(n, action)
-			);
-		case TOGGLE_CONFIGURE_MODE:
-			return state.map(n =>
-				newsContainer(n, action)
-			);
-		case CHANGE_MAX_HEADLINES:
-			return state.map(n =>
-				newsContainer(n, action)
-			);
-    case CHANGE_TITLE:
-			return state.map(n =>
-				newsContainer(n, action)
-			);
     case FETCH_SOURCES:
       return [
         ...action.data.state

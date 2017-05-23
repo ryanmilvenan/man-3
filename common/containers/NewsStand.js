@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { SOCKET_EVENTS_ACTION_CREATORS } from 'reducers/socket_io_reducer';
+import { NEWS_CONTAINER_ACTION_CREATORS } from 'reducers/news_container_reducer';
 import { APP_STATE_ACTION_CREATORS } from 'reducers/app_state_reducer';
 import NewsContainer from './NewsContainer';
 import SideMenu from '../components/SideMenu';
@@ -9,21 +10,31 @@ import AppBar from 'material-ui/AppBar';
 
 export class NewsStand extends Component {
 
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleKeydown.bind(this), false);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeydown.bind(this), false);
+  }
+
   componentDidUpdate(prevProps, prevState) {
     if(this.props.newsContainers !== prevProps.newsContainers
       && this.props.newsContainers.length && this.newsContainersAdded(prevProps)) {
       this.props.persistState(this.props.newsContainers);
     }
   }
-
-  componentDidUpdate(prevProps) {
-    if(this.props.newsContainers !== prevProps.newsContainers) {
-      this.props.persistState(this.props.newsContainers);
-    }
+ 
+  newsContainersAdded(prevProps) {
+   return prevProps.newsContainers.length !== this.props.newsContainers.length;
   }
 
-  newsContainersAdded(prevProps) {
-    return prevProps.newsContainers.length !== this.props.newsContainers.length;
+  handleKeydown(e) {
+    switch(e.keyCode) {
+      case 27:
+        this.props.resetContainerState();
+        break;
+    }
   }
 
   render() {
@@ -70,7 +81,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = {
   ...SOCKET_EVENTS_ACTION_CREATORS,
-  ...APP_STATE_ACTION_CREATORS
+  ...APP_STATE_ACTION_CREATORS,
+  ...NEWS_CONTAINER_ACTION_CREATORS
 }
 
 NewsStand = connect(

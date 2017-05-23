@@ -8,7 +8,7 @@ let socket = io.connect('http://localhost:3000');
 let socketIoMiddleware = createSocketIoMiddleware(socket, "SERVER:");
 
 const debounceConfig = {
-  db: 400
+  db: 500
 }
 
 let debouncer = createDebounce(debounceConfig);
