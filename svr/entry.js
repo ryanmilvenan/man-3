@@ -8,9 +8,9 @@ import Root from '../common/components/Root.js';
 
 export default function handleRender(req, res) {
 
-	if(!db.connection.readyState) {
-		db.mongoose.connect('mongodb://localhost/mangrove');
-	}
+  if (!db.connection.readyState) {
+    db.mongoose.connect('mongodb://localhost/mangrove');
+  }
 
   NewsStand.fetchNewsContainers().then((newsContainers) => {
     let state = {
@@ -20,8 +20,9 @@ export default function handleRender(req, res) {
     const store = configureStore(state)
     const preloadedState = store.getState();
 
-    const html = renderToString(
-      <Root store={store} />
+    const html = renderToString( <
+      Root store = { store }
+      />
     )
 
     res.send(renderFullPage(html, preloadedState))
@@ -46,11 +47,9 @@ const renderFullPage = (html, preloadedState) => {
         <script>
           window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState).replace(/</g, '\\x3c')}
         </script>
-        <script src="/vendor.bundle.js"></script>
-        <script src="/client.bundle.js"></script>
+        <script src="/vendor.bundle.js.gz"></script>
+        <script src="/client.bundle.js.gz"></script>
       </body>
     </html>
     `
 }
-
-
