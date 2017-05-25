@@ -1,10 +1,22 @@
 <html>
-  <head>
-    <title>Carnival in Paradise</title>
-    <!-- <link rel="stylesheet" type="text/css" href="/bundle.css"/> -->
-  </head>
-  <body>
-    <div id="root"></div>
-    <script src="/client.bundle.js"></script>
-  </body>
+
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0">
+  <title>Carnival in Paradise</title>
+  <!-- <link rel="stylesheet" type="text/css" href="/bundle.css"/> -->
+</head>
+
+<body>
+  <div id="root"></div>
+  <script src="/client.bundle.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker
+        .register('/sw.dev.js')
+        .then(function() {
+          console.log("Service Worker Registered");
+        });
+    }
+  </script>
+</body>
 <html>

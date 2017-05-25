@@ -3,6 +3,7 @@ const nodeExternals = require('webpack-node-externals');
 const pkg = require('./package.json');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
 
 const PATHS = {
@@ -17,12 +18,12 @@ module.exports = [{
     name: 'client',
     context: PATHS.client,
     entry: {
-      main: './index.js',
-      vendor: Object.keys(pkg.dependencies)
+      client: './index.js',
+      vendor: Object.keys(pkg.dependencies),
     },
     output: {
       path: PATHS.out,
-      filename: 'client.bundle.js',
+      filename: '[name].bundle.js',
       publicPath: '/'
     },
     module: {
@@ -72,7 +73,10 @@ module.exports = [{
         test: /\.js$|\.css$|\.html$/,
         threshold: 10240,
         minRatio: 0.8
-      })
+      }),
+      new CopyWebpackPlugin([
+        { from: './sw.js'}
+      ])
     ],
     resolveLoader: {
       modules: [

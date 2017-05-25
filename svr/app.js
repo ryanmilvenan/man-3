@@ -15,6 +15,16 @@ const compiler = webpack(config);
 export const app = express();
 export const server = http.Server(app);
 
+const gzip = (req, res, next) => {
+  if(req.baseUrl === '/sw.js') {
+    next();
+  } else {
+    req.url = req.url + '.gz';
+    res.set('Content-Encoding', 'gzip');
+    next();
+  }
+};
+
 if (process.env.NODE_ENV !== 'production') {
   app.use(webpackDevMiddleware(compiler, {
     noInfo: true,
@@ -26,11 +36,7 @@ if (process.env.NODE_ENV !== 'production') {
   app.use(webpackHotMiddleware(compiler));
   app.use(express.static(path.resolve(__dirname, '../dev_tools')));
 } else {
-  app.use('*.js', function(req, res, next) {
-    req.url = req.url + '.gz';
-    res.set('Content-Encoding', 'gzip');
-    next();
-  });
+  app.use('*.js', gzip);
   app.use(express.static(path.resolve(__dirname, '../build')));
   app.use(handleRender);
 }

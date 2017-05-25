@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "build": "webpack --config webpack.config.prod.js",
-    "prod": "concurrently \"mongod --dbpath ./mongodb --logpath ./mongodb/logs/logs.prod\" \"NODE_ENV='production' node svr/index.js\"",
+    "build": "webpack -p --config webpack.config.prod.js",
+    "prod": "concurrently \"mongod --dbpath ./mongodb --logpath ./mongodb/logs/logs.prod\" \"npm run build && NODE_ENV='production' node svr/index.js\"",
     "start": "concurrently \"mongod --dbpath ./mongodb --logpath ./mongodb/logs/logs.dev\" \"nodemon --watch svr svr/index.js\"",
     "debug": "node debug svr/index.js",
     "debug-prod": "NODE_ENV='production' node debug svr/index.js"
@@ -44,6 +44,7 @@
     "babel-register": "^6.22.0",
     "compression-webpack-plugin": "^0.4.0",
     "concurrently": "^3.1.0",
+    "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.28.1",
     "express": "^4.15.2",
     "extract-text-webpack-plugin": "v2.1.0",

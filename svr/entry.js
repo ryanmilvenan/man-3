@@ -39,7 +39,8 @@ const renderFullPage = (html, preloadedState) => {
     <html>
       <head>
         <title>Carnival In Paradise</title>
-        <link rel="stylesheet" type="text/css" href="/stylesheets/css-bundle.css"/>
+        <meta name="viewport" content="width=device-width, minimum-scale=1.0">
+        <meta name="theme-color" content="#db5945">
         <link rel="stylesheet" type="text/css" href="/stylesheets/sass-bundle.css"/>
       </head>
       <body>
@@ -47,8 +48,15 @@ const renderFullPage = (html, preloadedState) => {
         <script>
           window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState).replace(/</g, '\\x3c')}
         </script>
-        <script src="/vendor.bundle.js.gz"></script>
-        <script src="/client.bundle.js.gz"></script>
+        <script src="/vendor.bundle.js"></script>
+        <script src="/client.bundle.js"></script>
+        <script>
+          if('serviceWorker' in navigator) {
+            navigator.serviceWorker
+              .register('/sw.js')
+              .then(function() { console.log("Service Worker Registered"); });
+          }
+        </script>
       </body>
     </html>
     `
