@@ -2,6 +2,7 @@ const path = require('path');
 const nodeExternals = require('webpack-node-externals');
 const pkg = require('./package.json');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
 
 const PATHS = {
@@ -130,7 +131,10 @@ module.exports = [
     },
     plugins: [
       extractCSS,
-      extractSASS
+      extractSASS,
+      new CopyWebpackPlugin([
+        { from: 'carnival.png'}
+      ]),
     ],
     resolveLoader: {
       modules: [

@@ -38,6 +38,7 @@ const renderFullPage = (html, preloadedState) => {
     <html>
       <head>
         <title>Carnival In Paradise</title>
+        <link rel=icon href=carnival.png sizes="16x16" type="image/png">
         <link rel="stylesheet" type="text/css" href="/stylesheets/css-bundle.css"/>
         <link rel="stylesheet" type="text/css" href="/stylesheets/sass-bundle.css"/>
       </head>
