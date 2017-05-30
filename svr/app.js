@@ -2,6 +2,8 @@
 import express from 'express';
 import http from 'http';
 import path from 'path';
+import bodyParser from 'body-parser';
+import routes from './lib/routes';
 
 //Webpack
 import webpack from 'webpack';
@@ -16,7 +18,7 @@ export const app = express();
 export const server = http.Server(app);
 
 const gzip = (req, res, next) => {
-  if(req.baseUrl === '/sw.js') {
+  if (req.baseUrl === '/sw.js') {
     next();
   } else {
     req.url = req.url + '.gz';
@@ -33,11 +35,15 @@ if (process.env.NODE_ENV !== 'production') {
       colors: true
     }
   }));
+  app.use(bodyParser.json());
   app.use(webpackHotMiddleware(compiler));
   app.use(express.static(path.resolve(__dirname, '../dev_tools')));
+  app.use(routes);
 } else {
+  app.use(bodyParser.json());
   app.use('*.js', gzip);
   app.use(express.static(path.resolve(__dirname, '../build')));
+  app.use(routes);
   app.use(handleRender);
 }
 

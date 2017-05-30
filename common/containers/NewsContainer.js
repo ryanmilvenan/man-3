@@ -5,7 +5,7 @@ import { SOCKET_EVENTS_ACTION_CREATORS } from 'reducers/socket_io_reducer';
 import { NEWS_CONTAINER_ACTION_CREATORS } from 'reducers/news_container_reducer';
 import NewsItem from 'components/NewsItem';
 import CircularProgress from 'material-ui/CircularProgress';
-import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
+import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-ui/Toolbar';
 import IconMenu from 'material-ui/IconMenu';
 import IconButton from 'material-ui/IconButton';
 import MenuIcon from 'material-ui/svg-icons/navigation/menu';
@@ -18,13 +18,13 @@ import TextField from 'material-ui/TextField';
 
 
 export class NewsContainer extends Component {
-	componentDidMount() {
-    this.props.refreshSource(this.props);
-    setInterval(this.props.refreshSource, this.props.timeout, this.props)
-	}
+  componentDidMount() {
+    this.refreshSouce(this.props);
+    setInterval(this.refreshSource, this.props.timeout, this.props);
+  }
 
   componentDidUpdate(prevProps) {
-    if(this.props.title !== prevProps.title) {
+    if (this.props.title !== prevProps.title) {
       this.props.persistState(this.props.newsContainers);
     }
   }
@@ -37,6 +37,21 @@ export class NewsContainer extends Component {
     this.props.changeTitle(this.props.id, newVal);
   }
 
+  refreshSouce(state) {
+    fetch(API + `/refresh/${encodeURIComponent(state.url)}`)
+      .then((response) => {
+        return response.json();
+      }).then((response) => {
+        const { feed, err } = response.data;
+        if (err) {
+          console.error(`Error Refreshing Sources: ${err}`);
+        } else {
+          const { id, url } = this.props;
+          this.props.updateNewsContainerSources(id, url, feed, err);
+        }
+      });
+  }
+
 
   styles = {
     titleConfigure: {
@@ -45,7 +60,7 @@ export class NewsContainer extends Component {
     }
   }
 
-	render() {
+  render() {
     const {
       newsContainers,
       id,
@@ -62,100 +77,130 @@ export class NewsContainer extends Component {
       toggleConfigureMode,
       updateTitleForContainer
     } = this.props;
-    return (
-     <div className="news-container">
-       <Toolbar
-        style={(configureMode) ? this.styles.titleConfigure : {}}>
-        {configureMode ? 
-          <TextField
-            id={title}
-            inputStyle={{marginLeft:'0.5rem'}}
-            onChange={this.handleTitleChange.bind(this)}
-            value={title}
-          />
-        :
-          <ToolbarTitle
-            text={title}
-          />
+    return ( <
+      div className = "news-container" >
+      <
+      Toolbar style = {
+        (configureMode) ? this.styles.titleConfigure : {}
+      } > {
+        configureMode ?
+        <
+        TextField
+        id = { title }
+        inputStyle = {
+          { marginLeft: '0.5rem' }
         }
-        <ToolbarGroup>
-          {configureMode &&
-            <div>
-              <IconButton
-                touch={true}
-                onTouchTap={() => rearrangeContainer(id, {left:true})}>
-                <LeftIcon />
-              </IconButton>
-            </div>
-          }
-          {configureMode &&
-            <div>
-              <IconButton
-                touch={true}
-                onTouchTap={() => rearrangeContainer(id, {right:true})}>
-                <RightIcon />
-              </IconButton>
-            </div>
-          }
-					<IconMenu
-						iconButtonElement={
-							<IconButton 
-								touch={true}>
-								<MenuIcon />
-							</IconButton>
-						}>
-						<MenuItem 
-							primaryText="Delete" 
-							onTouchTap={() => deleteContainer(id)} />
-            <MenuItem
-              primaryText="Configure"
-              onTouchTap={() => {
-                toggleConfigureMode(id);
-              }}/>
-					</IconMenu>
-        </ToolbarGroup>
-      </Toolbar>
-      {configureMode &&
-        <Slider
-          label="Number of Items"
-          min={1}
-          max={allItems.length}
-          step={1}
-          sliderStyle={{marginBottom:0, marginTop:0}}
-          onDragStop={() => {
+        onChange = { this.handleTitleChange.bind(this) }
+        value = { title }
+        /> : <
+        ToolbarTitle
+        text = { title }
+        />
+      } <
+      ToolbarGroup > {
+        configureMode &&
+        <
+        div >
+        <
+        IconButton
+        touch = { true }
+        onTouchTap = {
+          () => rearrangeContainer(id, { left: true })
+        } >
+        <
+        LeftIcon / >
+        <
+        /IconButton> < /
+        div >
+      } {
+        configureMode &&
+          <
+          div >
+          <
+          IconButton
+        touch = { true }
+        onTouchTap = {
+            () => rearrangeContainer(id, { right: true })
+          } >
+          <
+          RightIcon / >
+          <
+          /IconButton> < /
+        div >
+      } <
+      IconMenu iconButtonElement = { <
+        IconButton
+        touch = { true } >
+        <
+        MenuIcon / >
+        <
+        /IconButton>
+      } >
+      <
+      MenuItem primaryText = "Delete"
+      onTouchTap = {
+        () => deleteContainer(id)
+      }
+      /> <
+      MenuItem primaryText = "Configure"
+      onTouchTap = {
+        () => {
+          toggleConfigureMode(id);
+        }
+      }
+      /> < /
+      IconMenu > <
+      /ToolbarGroup> < /
+      Toolbar > {
+        configureMode &&
+        <
+        Slider
+        label = "Number of Items"
+        min = { 1 }
+        max = { allItems.length }
+        step = { 1 }
+        sliderStyle = {
+          { marginBottom: 0, marginTop: 0 }
+        }
+        onDragStop = {
+          () => {
             refreshSource(this.props);
             persistState(newsContainers)
-          }}
-          onChange={this.handleHeadlineSliderAdjust.bind(this)}
-          value={maxHeadlines}
+          }
+        }
+        onChange = { this.handleHeadlineSliderAdjust.bind(this) }
+        value = { maxHeadlines }
         />
-      }
-      <div className="content">
-        <Paper
-          zDepth={3}
-          style={{display: 'flex', flexDirection: 'column', width: '100%'}}
-        >
-          {loading ? 
-            <CircularProgress 
-              size={120}
-              style={{
-                alignSelf: 'center',
-                marginTop: '3rem',
-                marginBottom: '3rem',
-              }}
-              />
-          : 
-          items.map((item, idx) => 
-            <NewsItem
-              key={idx}
-              {...item}
-            />
-          )}
-        </Paper>
-      </div>
-     </div>
+      } <
+      div className = "content" >
+      <
+      Paper zDepth = { 3 }
+      style = {
+        { display: 'flex', flexDirection: 'column', width: '100%' }
+      } > {
+        loading ?
+        <
+        CircularProgress
+        size = { 120 }
+        style = {
+          {
+            alignSelf: 'center',
+            marginTop: '3rem',
+            marginBottom: '3rem',
+          }
+        }
+        /> :
+        items.map((item, idx) =>
+          <
+          NewsItem key = { idx } {...item }
+          />
+        )
+      } <
+      /Paper> < /
+      div > <
+      /div>
     )
-	}
+  }
 }
 
 NewsContainer.propTypes = {
@@ -177,7 +222,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = {
   ...SOCKET_EVENTS_ACTION_CREATORS,
-	...NEWS_CONTAINER_ACTION_CREATORS,
+  ...NEWS_CONTAINER_ACTION_CREATORS,
 }
 
 export default connect(

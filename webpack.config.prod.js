@@ -62,8 +62,9 @@ module.exports = [{
         }
       }),
       new webpack.DefinePlugin({
+        'API': JSON.stringify('http://localhost:3000'),
         'process.env': {
-          'NODE_ENV': JSON.stringify('production')
+          'NODE_ENV': JSON.stringify('production'),
         }
       }),
       new webpack.optimize.CommonsChunkPlugin({ name: "vendor", filename: "vendor.bundle.js" }),
@@ -75,7 +76,7 @@ module.exports = [{
         minRatio: 0.8
       }),
       new CopyWebpackPlugin([
-        { from: './sw.js'}
+        { from: './sw.js' }
       ])
     ],
     resolveLoader: {

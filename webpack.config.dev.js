@@ -58,6 +58,9 @@ module.exports = {
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
+    new webpack.DefinePlugin({
+      'API': JSON.stringify('http://localhost:3000')
+    }),
     new ExtractTextPlugin('bundle.css'),
     new CopyWebpackPlugin([
       { from: './sw.dev.js' }

@@ -1,12 +1,12 @@
 import { REFRESH_SOURCE } from './socket_io_reducer.js';
 
 export const newsItem = (state = {}, action, itemId, containerId) => {
-  switch(action.type) {
+  switch (action.type) {
     case UPDATE_NEWS_CONTAINER_SOURCES:
       return {
         ...state,
         itemId,
-        containerId: action.data.id,
+        containerId: action.id,
       }
     case CHANGE_MAX_HEADLINES:
       return {
@@ -54,7 +54,7 @@ export const NEWS_CONTAINER_ACTION_CREATORS = {
   }),
   toggleConfigureMode: (id) => ({
     type: TOGGLE_CONFIGURE_MODE,
-		id
+    id
   }),
   changeMaxHeadlines: (id, number) => ({
     type: CHANGE_MAX_HEADLINES,
@@ -68,12 +68,19 @@ export const NEWS_CONTAINER_ACTION_CREATORS = {
   }),
   resetContainerState: () => ({
     type: DISABLE_CONFIGURE_MODE
+  }),
+  updateNewsContainerSources: (id, url, feed, err) => ({
+    type: UPDATE_NEWS_CONTAINER_SOURCES,
+    id,
+    url,
+    feed,
+    err
   })
 }
 
 export const newsContainer = (state = {}, action, idx = -1) => {
   const { id, url, title, number } = action;
-  switch(action.type) {
+  switch (action.type) {
     case ADD_NEWS_CONTAINER:
       return {
         id,
@@ -86,20 +93,20 @@ export const newsContainer = (state = {}, action, idx = -1) => {
         loading: true,
         configureMode: false
       }
-		case TOGGLE_CONFIGURE_MODE:
-      if(id === state.id) {
+    case TOGGLE_CONFIGURE_MODE:
+      if (id === state.id) {
         return Object.assign({}, state, {
           configureMode: !state.configureMode
         });
       } else {
         return state;
       }
-		case DISABLE_CONFIGURE_MODE:
+    case DISABLE_CONFIGURE_MODE:
       return Object.assign({}, state, {
         configureMode: false
       });
-		case CHANGE_MAX_HEADLINES:
-      if(id === state.id) {
+    case CHANGE_MAX_HEADLINES:
+      if (id === state.id) {
         return Object.assign({}, state, {
           maxHeadlines: number,
           items: state.allItems.slice(0, number).map((item, idx) => {
@@ -109,8 +116,8 @@ export const newsContainer = (state = {}, action, idx = -1) => {
       } else {
         return state;
       }
-		case CHANGE_TITLE:
-      if(id === state.id) {
+    case CHANGE_TITLE:
+      if (id === state.id) {
         return Object.assign({}, state, {
           title
         });
@@ -118,18 +125,18 @@ export const newsContainer = (state = {}, action, idx = -1) => {
         return state;
       }
     case REFRESH_SOURCE:
-      if(id == state.id) {
+      if (id == state.id) {
         return {
           ...state,
           loading: true
-        }	
+        }
       } else {
         return state;
-      }	
+      }
     case UPDATE_NEWS_CONTAINER_SOURCES:
-      if(action.data.id == idx && action.data.feed) {
+      if (action.id == idx && action.feed) {
         let items, allItems;
-        if(action.data.err && state.items) {
+        if (action.err && state.items) {
           items = state.items;
           allItems = state.items
           return {
@@ -139,9 +146,9 @@ export const newsContainer = (state = {}, action, idx = -1) => {
             allItems,
             items
           }
-        } else if(!action.data.err) {
-          items = action.data.feed.entries.slice(0, state.maxHeadlines);
-          allItems = action.data.feed.entries;
+        } else if (!action.err) {
+          items = action.feed.entries.slice(0, state.maxHeadlines);
+          allItems = action.feed.entries;
           return {
             ...state,
             loading: false,
@@ -155,7 +162,7 @@ export const newsContainer = (state = {}, action, idx = -1) => {
           return state;
         }
       } else {
-        return state; 
+        return state;
       }
     case UPDATE_NEWS_CONTAINER_INDICES:
       return {
@@ -189,26 +196,26 @@ export const newsContainer = (state = {}, action, idx = -1) => {
 
 export const FETCH_SOURCES = 'NEWSSTAND:FETCH_SOURCES';
 export const newsContainers = (state = [], action) => {
-  switch(action.type) {
-		case REFRESH_SOURCE:
-		case TOGGLE_CONFIGURE_MODE:
+  switch (action.type) {
+    case REFRESH_SOURCE:
+    case TOGGLE_CONFIGURE_MODE:
     case DISABLE_CONFIGURE_MODE:
-		case CHANGE_MAX_HEADLINES:
+    case CHANGE_MAX_HEADLINES:
     case CHANGE_TITLE:
-			return state.map(n =>
-				newsContainer(n, action)
-			);
+      return state.map(n =>
+        newsContainer(n, action)
+      );
     case ADD_NEWS_CONTAINER:
       return [
         ...state,
         newsContainer(undefined, action)
       ];
     case UPDATE_NEWS_CONTAINER_SOURCES:
-      if (action.data.err) {
-        console.error(`CONTAINER ERROR: could not get source for url ${action.data.url}`);
+      if (action.err) {
+        console.error(`CONTAINER ERROR: could not get source for url ${action.url}`);
       }
       return state.map((n, idx) =>
-        newsContainer(n, action, idx) 
+        newsContainer(n, action, idx)
       );
     case FETCH_SOURCES:
       return [
@@ -224,8 +231,8 @@ export const newsContainers = (state = [], action) => {
       });
     case REARRANGE_NEWS_CONTAINER_INDICES:
       const { direction: { left, right }, id: rId } = action.data;
-      if(left) {
-        if(rId === 0) {
+      if (left) {
+        if (rId === 0) {
           return state;
         }
         return [
@@ -236,8 +243,8 @@ export const newsContainers = (state = [], action) => {
         ].map((n, idx) => {
           return newsContainer(n, action, idx);
         });
-      } else if(right) {
-        if(rId === state.length - 1) {
+      } else if (right) {
+        if (rId === state.length - 1) {
           return state;
         }
         return [
