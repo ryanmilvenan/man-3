@@ -5,7 +5,9 @@ self.addEventListener('install', function(event) {
         '/index.html',
         '/vendor.bundle.js',
         '/client.bundle.js',
-        '/stylesheets/sass-bundle.css'
+        '/stylesheets/sass-bundle.css',
+        '/carnival.png',
+        '/manifest.json'
       ]).catch((err) => {
         console.error(`Cache Add All Error: ${err}`);
       });

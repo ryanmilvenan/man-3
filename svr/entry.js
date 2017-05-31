@@ -40,6 +40,8 @@ const renderFullPage = (html, preloadedState) => {
       <head>
         <title>Carnival In Paradise</title>
         <link rel=icon href=carnival.png sizes="16x16" type="image/png">
+        <link rel="apple-touch-icon" href="carnival.png">
+        <link rel="manifest" href="/manifest.json">
         <meta name="viewport" content="width=device-width, minimum-scale=1.0">
         <meta name="theme-color" content="#db5945">
         <link rel="stylesheet" type="text/css" href="/stylesheets/sass-bundle.css"/>

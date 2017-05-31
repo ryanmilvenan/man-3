@@ -1,0 +1,12 @@
+{
+  "short_name": "Carnival",
+  "name": "Carnival In Paradise",
+  "icons": [
+    {
+      "src": "carnival.png",
+      "type": "image/png",
+      "sizes": "32x32"
+    }
+  ],
+  "start_url": "index.html"
+}

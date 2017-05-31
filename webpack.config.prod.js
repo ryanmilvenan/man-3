@@ -76,7 +76,8 @@ module.exports = [{
         minRatio: 0.8
       }),
       new CopyWebpackPlugin([
-        { from: './sw.js' }
+        { from: './sw.js' },
+        { from: './manifest.json' }
       ])
     ],
     resolveLoader: {
