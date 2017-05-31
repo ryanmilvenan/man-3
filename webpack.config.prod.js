@@ -2,6 +2,7 @@ const path = require('path');
 const nodeExternals = require('webpack-node-externals');
 const pkg = require('./package.json');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
 
@@ -13,35 +14,30 @@ const PATHS = {
 
 const extractCSS = new ExtractTextPlugin('stylesheets/css-bundle.css');
 const extractSASS = new ExtractTextPlugin('stylesheets/sass-bundle.css');
-module.exports = [
-  {
+module.exports = [{
     name: 'client',
     context: PATHS.client,
-    devtool: 'cheap-source-map',
     entry: {
-      main:'./index.js',
-      vendor: Object.keys(pkg.dependencies)
+      client: './index.js',
+      vendor: Object.keys(pkg.dependencies),
     },
     output: {
       path: PATHS.out,
-      filename: 'client.bundle.js',
+      filename: '[name].bundle.js',
       publicPath: '/'
     },
-		module: {
-			rules: [
-				{
-					test: /\.jsx?$/,
-					exclude: /node_modules/,
-					loaders: [
-            {
-						  loader:'babel-loader'
-            }
-					]
-				},	
-				{
-					test: /\.css$/,
-					loader: extractCSS.extract({ fallback: 'style-loader', use:'css-loader?minimize=true' })
-				},	
+    module: {
+      rules: [{
+          test: /\.jsx?$/,
+          exclude: /node_modules/,
+          loaders: [{
+            loader: 'babel-loader'
+          }]
+        },
+        {
+          test: /\.css$/,
+          loader: extractCSS.extract({ fallback: 'style-loader', use: 'css-loader?minimize=true' })
+        },
         {
           test: /\.scss$/,
           loader: extractSASS.extract({
@@ -51,41 +47,50 @@ module.exports = [
         },
         {
           test: /\.(eot|svg|ttf|woff(2)?)(\?v=\d+\.\d+\.\d+)?/,
-          loaders: [
-            {
-              loader:'url-loader'
-            }
-          ]
-        }	
-			]
+          loaders: [{
+            loader: 'url-loader'
+          }]
+        }
+      ]
     },
     plugins: [
       extractCSS,
       extractSASS,
       new webpack.optimize.UglifyJsPlugin({
         compressor: {
-          warnings: false 
-        } 
-      }),
-      new webpack.DefinePlugin({
-        'process.env': {
-          'NODE_ENV': JSON.stringify('production')
+          warnings: false
         }
       }),
-      new webpack.optimize.CommonsChunkPlugin({name: "vendor", filename: "vendor.bundle.js"})
+      new webpack.DefinePlugin({
+        'API': JSON.stringify('http://localhost:3000'),
+        'process.env': {
+          'NODE_ENV': JSON.stringify('production'),
+        }
+      }),
+      new webpack.optimize.CommonsChunkPlugin({ name: "vendor", filename: "vendor.bundle.js" }),
+      new CompressionPlugin({
+        asset: "[path].gz[query]",
+        algorithm: "gzip",
+        test: /\.js$|\.css$|\.html$/,
+        threshold: 10240,
+        minRatio: 0.8
+      }),
+      new CopyWebpackPlugin([
+        { from: './sw.js' }
+      ])
     ],
     resolveLoader: {
       modules: [
-        path.resolve(__dirname, 'node_modules') 
-      ] 
+        path.resolve(__dirname, 'node_modules')
+      ]
     },
     resolve: {
       modules: [
         path.resolve(__dirname, 'node_modules'),
         path.resolve(__dirname, 'common')
-      ] 
+      ]
     }
-  }, 
+  },
   {
     name: 'server',
     context: PATHS.server,
@@ -97,21 +102,18 @@ module.exports = [
       filename: 'server.bundle.js',
       libraryTarget: 'commonjs2'
     },
-		module: {
-			rules: [
-				{
-					test: /\.js$/,
-					exclude: /node_modules/,
-					loaders: [
-            {
-						  loader:'babel-loader'
-            }
-					]
-				},	
-				{
-					test: /\.css$/,
-					loader: extractCSS.extract({ fallback: 'style-loader', use:'css-loader?minimize=true' })
-				},	
+    module: {
+      rules: [{
+          test: /\.js$/,
+          exclude: /node_modules/,
+          loaders: [{
+            loader: 'babel-loader'
+          }]
+        },
+        {
+          test: /\.css$/,
+          loader: extractCSS.extract({ fallback: 'style-loader', use: 'css-loader?minimize=true' })
+        },
         {
           test: /\.scss$/,
           loader: extractSASS.extract({
@@ -121,31 +123,29 @@ module.exports = [
         },
         {
           test: /\.(eot|svg|ttf|woff(2)?)(\?v=\d+\.\d+\.\d+)?/,
-          loaders: [
-            {
-              loader:'url-loader'
-            }
-          ]
-        }	
-			]
+          loaders: [{
+            loader: 'url-loader'
+          }]
+        }
+      ]
     },
     plugins: [
       extractCSS,
       extractSASS,
       new CopyWebpackPlugin([
-        { from: 'carnival.png'}
+        { from: 'carnival.png' }
       ]),
     ],
     resolveLoader: {
       modules: [
-        path.resolve(__dirname, 'node_modules') 
-      ] 
+        path.resolve(__dirname, 'node_modules')
+      ]
     },
     resolve: {
       modules: [
         path.resolve(__dirname, 'node_modules'),
         path.resolve(__dirname, 'common')
-      ] 
+      ]
     }
   }
 ]

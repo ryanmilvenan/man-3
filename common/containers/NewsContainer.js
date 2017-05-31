@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { SOCKET_EVENTS_ACTION_CREATORS } from 'reducers/socket_io_reducer';
 import { NEWS_CONTAINER_ACTION_CREATORS } from 'reducers/news_container_reducer';
+import { ASYNC_ACTION_CREATORS } from 'reducers/async_reducer';
 import NewsItem from 'components/NewsItem';
 import CircularProgress from 'material-ui/CircularProgress';
-import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
+import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-ui/Toolbar';
 import IconMenu from 'material-ui/IconMenu';
 import IconButton from 'material-ui/IconButton';
 import MenuIcon from 'material-ui/svg-icons/navigation/menu';
@@ -18,13 +18,13 @@ import TextField from 'material-ui/TextField';
 
 
 export class NewsContainer extends Component {
-	componentDidMount() {
+  componentDidMount() {
     this.props.refreshSource(this.props);
-    setInterval(this.props.refreshSource, this.props.timeout, this.props)
-	}
+    setInterval(this.props.refreshSource, this.props.timeout, this.props);
+  }
 
   componentDidUpdate(prevProps) {
-    if(this.props.title !== prevProps.title) {
+    if (this.props.title !== prevProps.title) {
       this.props.persistState(this.props.newsContainers);
     }
   }
@@ -37,6 +37,21 @@ export class NewsContainer extends Component {
     this.props.changeTitle(this.props.id, newVal);
   }
 
+  refreshSouce(state) {
+    fetch(API + `/refresh/${encodeURIComponent(state.url)}`)
+      .then((response) => {
+        return response.json();
+      }).then((response) => {
+        const { feed, err } = response.data;
+        if (err) {
+          console.error(`Error Refreshing Sources: ${err}`);
+        } else {
+          const { id, url } = this.props;
+          this.props.updateNewsContainerSources(id, url, feed, err);
+        }
+      });
+  }
+
 
   styles = {
     titleConfigure: {
@@ -45,7 +60,7 @@ export class NewsContainer extends Component {
     }
   }
 
-	render() {
+  render() {
     const {
       newsContainers,
       id,
@@ -155,7 +170,7 @@ export class NewsContainer extends Component {
       </div>
      </div>
     )
-	}
+  }
 }
 
 NewsContainer.propTypes = {
@@ -176,8 +191,8 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = {
-  ...SOCKET_EVENTS_ACTION_CREATORS,
-	...NEWS_CONTAINER_ACTION_CREATORS,
+  ...NEWS_CONTAINER_ACTION_CREATORS,
+  ...ASYNC_ACTION_CREATORS
 }
 
 export default connect(

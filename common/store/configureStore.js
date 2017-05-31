@@ -1,22 +1,14 @@
 import { createStore, compose, applyMiddleware } from 'redux';
-import createSocketIoMiddleware from 'redux-socket.io';
-import createDebounce from 'redux-debounce';
-import io from 'socket.io-client';
+import createSagaMiddleware from 'redux-saga';
+
 import rootReducer, { initialState } from 'reducers/index.js';
+import apiSaga from '_async/sagas';
 
-let socket = io.connect('http://localhost:3000');
-let socketIoMiddleware = createSocketIoMiddleware(socket, "SERVER:");
-
-const debounceConfig = {
-  db: 500
-}
-
-let debouncer = createDebounce(debounceConfig);
+let sagaMiddleware = createSagaMiddleware();
 
 const enhancer = compose(
   applyMiddleware(
-    debouncer,
-    socketIoMiddleware 
+    sagaMiddleware
   )
 )
 
@@ -28,6 +20,7 @@ export default function configureStore(preloadedState) {
     enhancer
   )
 
+  sagaMiddleware.run(apiSaga);
+
   return store;
 }
-

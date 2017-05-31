@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "build": "webpack --config webpack.config.prod.js",
-    "prod": "concurrently \"mongod --dbpath ./mongodb --logpath ./mongodb/logs/logs.prod\" \"NODE_ENV='production' node svr/index.js\"",
+    "build": "webpack -p --config webpack.config.prod.js",
+    "prod": "concurrently \"mongod --dbpath ./mongodb --logpath ./mongodb/logs/logs.prod\" \"npm run build && NODE_ENV='production' node svr/index.js\"",
     "start": "concurrently \"mongod --dbpath ./mongodb --logpath ./mongodb/logs/logs.dev\" \"nodemon --watch svr svr/index.js\"",
     "debug": "node debug svr/index.js",
     "debug-prod": "NODE_ENV='production' node debug svr/index.js"
@@ -29,12 +29,12 @@
     "react-redux": "^4.4.8",
     "react-tap-event-plugin": "^2.0.1",
     "redux": "^3.6.0",
-    "redux-debounce": "^1.0.1",
-    "redux-socket.io": "^1.4.0"
+    "redux-saga": "^0.15.3"
   },
   "devDependencies": {
     "babel-core": "^6.22.1",
     "babel-loader": "^6.2.10",
+    "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "^6.22.0",
     "babel-preset-es2015": "^6.22.0",
     "babel-preset-es2016": "^6.22.0",
@@ -42,6 +42,8 @@
     "babel-preset-react": "^6.22.0",
     "babel-preset-stage-0": "^6.22.0",
     "babel-register": "^6.22.0",
+    "body-parser": "^1.17.2",
+    "compression-webpack-plugin": "^0.4.0",
     "concurrently": "^3.1.0",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.28.1",
@@ -57,7 +59,6 @@
     "redux-devtools-dock-monitor": "^1.1.2",
     "redux-devtools-log-monitor": "^1.3.0",
     "sass-loader": "^4.1.1",
-    "socket.io": "^1.7.4",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
     "webpack": "v2.5.1",

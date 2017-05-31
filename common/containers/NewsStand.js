@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { SOCKET_EVENTS_ACTION_CREATORS } from 'reducers/socket_io_reducer';
 import { NEWS_CONTAINER_ACTION_CREATORS } from 'reducers/news_container_reducer';
+import { ASYNC_ACTION_CREATORS } from 'reducers/async_reducer';
 import { APP_STATE_ACTION_CREATORS } from 'reducers/app_state_reducer';
 import NewsContainer from './NewsContainer';
 import SideMenu from '../components/SideMenu';
@@ -61,7 +61,6 @@ export class NewsStand extends Component {
       </div>
     )
   }
-
 }
 
 NewsStand.propTypes = {
@@ -80,9 +79,9 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = {
-  ...SOCKET_EVENTS_ACTION_CREATORS,
   ...APP_STATE_ACTION_CREATORS,
-  ...NEWS_CONTAINER_ACTION_CREATORS
+  ...NEWS_CONTAINER_ACTION_CREATORS,
+  ...ASYNC_ACTION_CREATORS
 }
 
 NewsStand = connect(

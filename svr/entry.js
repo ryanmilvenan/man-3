@@ -8,9 +8,9 @@ import Root from '../common/components/Root.js';
 
 export default function handleRender(req, res) {
 
-	if(!db.connection.readyState) {
-		db.mongoose.connect('mongodb://localhost/mangrove');
-	}
+  if (!db.connection.readyState) {
+    db.mongoose.connect('mongodb://localhost/mangrove');
+  }
 
   NewsStand.fetchNewsContainers().then((newsContainers) => {
     let state = {
@@ -20,8 +20,9 @@ export default function handleRender(req, res) {
     const store = configureStore(state)
     const preloadedState = store.getState();
 
-    const html = renderToString(
-      <Root store={store} />
+    const html = renderToString( <
+      Root store = { store }
+      />
     )
 
     res.send(renderFullPage(html, preloadedState))
@@ -39,7 +40,8 @@ const renderFullPage = (html, preloadedState) => {
       <head>
         <title>Carnival In Paradise</title>
         <link rel=icon href=carnival.png sizes="16x16" type="image/png">
-        <link rel="stylesheet" type="text/css" href="/stylesheets/css-bundle.css"/>
+        <meta name="viewport" content="width=device-width, minimum-scale=1.0">
+        <meta name="theme-color" content="#db5945">
         <link rel="stylesheet" type="text/css" href="/stylesheets/sass-bundle.css"/>
       </head>
       <body>
@@ -49,9 +51,14 @@ const renderFullPage = (html, preloadedState) => {
         </script>
         <script src="/vendor.bundle.js"></script>
         <script src="/client.bundle.js"></script>
+        <script>
+          if('serviceWorker' in navigator) {
+            navigator.serviceWorker
+              .register('/sw.js')
+              .then(function() { console.log("Service Worker Registered"); });
+          }
+        </script>
       </body>
     </html>
     `
 }
-
-
