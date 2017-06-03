@@ -3,6 +3,7 @@ import express from 'express';
 import http from 'http';
 import path from 'path';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import routes from './lib/routes';
 
 //Webpack
@@ -41,6 +42,7 @@ if (process.env.NODE_ENV !== 'production') {
   app.use(routes);
 } else {
   app.use(bodyParser.json());
+  app.use(cookieParser());
   app.use('*.js', gzip);
   app.use(express.static(path.resolve(__dirname, '../build')));
   app.use(routes);

@@ -22,6 +22,9 @@
   },
   "homepage": "https://github.com/ryanmilvenan/man-3#readme",
   "dependencies": {
+    "auth0-lock": "^10.16.0",
+    "js-cookie": "^2.1.4",
+    "jwt-decode": "^2.2.0",
     "material-ui": "^0.18.1",
     "prop-types": "^15.5.8",
     "react": "^15.5.4",
@@ -29,6 +32,7 @@
     "react-redux": "^4.4.8",
     "react-tap-event-plugin": "^2.0.1",
     "redux": "^3.6.0",
+    "redux-debounce": "^1.0.1",
     "redux-saga": "^0.15.3"
   },
   "devDependencies": {
@@ -45,9 +49,11 @@
     "body-parser": "^1.17.2",
     "compression-webpack-plugin": "^0.4.0",
     "concurrently": "^3.1.0",
+    "cookie-parser": "^1.4.3",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.28.1",
     "express": "^4.15.2",
+    "express-jwt": "^5.3.0",
     "extract-text-webpack-plugin": "v2.1.0",
     "feed-reader": "^1.1.2",
     "file-loader": "^0.10.0",

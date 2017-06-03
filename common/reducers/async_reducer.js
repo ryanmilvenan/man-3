@@ -8,20 +8,27 @@ export const ASYNC_ACTION_CREATORS = {
     type: REFRESH_SOURCE,
     state
   }),
-  persistState: (state) => ({
+  persistState: (state, idToken) => ({
+    meta: {
+      debounce: 'simple',
+    },
     type: PERSIST_STATE,
-    state
+    state,
+    idToken
   }),
-  fetchState: () => ({
-    type: FETCH_STATE
+  fetchState: (auth) => ({
+    type: FETCH_STATE,
+    auth
   }),
-  deleteContainer: (id) => ({
+  deleteContainer: (id, idToken) => ({
     type: DELETE_CONTAINER,
-    id
+    id,
+    idToken
   }),
-  rearrangeContainer: (id, direction) => ({
+  rearrangeContainer: (id, direction, idToken) => ({
     type: REARRANGE_CONTAINER,
     id,
-    direction
+    direction,
+    idToken
   })
 }

@@ -2,6 +2,7 @@ self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open('mangrove').then(function(cache) {
       return cache.addAll([
+        '/',
         '/index.html',
         '/vendor.bundle.js',
         '/client.bundle.js',
@@ -15,17 +16,16 @@ self.addEventListener('install', function(event) {
   )
 });;
 
-self.addEventListener('fetch', function(event) {
-  var response;
+
+self.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
-    }).then((r) => {
-      response = r;
-      caches.open('mangrove').then((cache) => {
-        cache.put(event.request, response);
-      })
-      return response.clone();
+    caches.open('mangrove').then((cache) => {
+      return fetch(event.request).then((response) => {
+        if(event.request.method !== "POST") {
+          cache.put(event.request, response.clone());
+        }
+        return response;
+      });
     })
   );
 });

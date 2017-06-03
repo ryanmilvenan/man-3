@@ -3,14 +3,16 @@ import { newsContainerSchema } from './NewsContainerSchema.js';
 const Schema = mongoose.Schema;
 
 const newsStandSchema = new Schema({
-  newsContainers: [newsContainerSchema]
+  newsContainers: [newsContainerSchema],
+  user: String
 });
 
 
 newsStandSchema.statics.persistState = async (data) => {
+  const { user, newsContainers } = data;
   let docs, containers;
   try {
-    docs = await NewsStand.find({}); 
+    docs = await NewsStand.find({ user }); 
   } catch (err) {
     console.error(`ERROR FINDING SOURCES DURING PERSIST: ${err}`)
   }
@@ -19,7 +21,7 @@ newsStandSchema.statics.persistState = async (data) => {
     containers = new NewsStand(data);
   } else {
     containers = docs[0];
-    containers.newsContainers = data;
+    containers.newsContainers = data.newsContainers;
   }
 
   try {
@@ -29,10 +31,11 @@ newsStandSchema.statics.persistState = async (data) => {
   }
 }
 
-newsStandSchema.statics.fetchNewsContainers = async () => {
+newsStandSchema.statics.fetchNewsContainers = async (data) => {
+  const forAccount = data.user ? { user: data.user } : { user: 'default'};
   let docs, containers;
   try {
-    docs = await NewsStand.find({}); 
+    docs = await NewsStand.find(forAccount); 
   } catch (err) {
     console.error(`ERROR FINDING SOURCES DURING FETCH: ${err}`)
   }
@@ -49,16 +52,16 @@ newsStandSchema.statics.fetchNewsContainers = async () => {
   }
 }
 
-newsStandSchema.statics.deleteNewsContainer = async (id) => {
+newsStandSchema.statics.deleteNewsContainer = async (id, email) => {
   let docs, currentState;
   try {
-    docs = await NewsStand.find({});
+    docs = await NewsStand.findOne({ user: email }); 
   } catch (err) {
     console.error(`ERROR FINDING SOURCES DURING DELETE: ${err}`)
     return [];
   }
 
-  currentState = docs[0];
+  currentState = docs;
   if(currentState.newsContainers[id]) {
     currentState.newsContainers = [
       ...currentState.newsContainers.slice(0, id),
@@ -74,16 +77,16 @@ newsStandSchema.statics.deleteNewsContainer = async (id) => {
   }
 }
 
-newsStandSchema.statics.rearrangeContainer = async (id, direction) => {
+newsStandSchema.statics.rearrangeContainer = async (id, direction, email) => {
   let docs, currentState;
   try {
-    docs = await NewsStand.find({});
+    docs = await NewsStand.findOne({ user: email }); 
   } catch (err) {
     console.error(`ERROR FINDING SOURCES DURING DELETE: ${err}`)
     return [];
   }
   
-  currentState = docs[0];
+  currentState = docs;
   const { left, right } = direction;
   if(left) {
     if(id === 0) {

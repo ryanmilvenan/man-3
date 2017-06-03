@@ -24,9 +24,12 @@ export class NewsContainer extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.title !== prevProps.title) {
-      this.props.persistState(this.props.newsContainers);
+    if((prevProps.items.length !== this.props.items.length) && (this.props.maxHeadlines !== this.props.items.length)) {
+      this.props.refreshSource(this.props);
     }
+    // if (this.titleChanged(prevProps, this.props) && this.urlChanged(prevProps, this.props)) {
+    //   this.props.persistState(this.props.newsContainers, this.props.auth.idToken);
+    // }
   }
 
   handleHeadlineSliderAdjust(e, newVal) {
@@ -37,19 +40,12 @@ export class NewsContainer extends Component {
     this.props.changeTitle(this.props.id, newVal);
   }
 
-  refreshSouce(state) {
-    fetch(API + `/refresh/${encodeURIComponent(state.url)}`)
-      .then((response) => {
-        return response.json();
-      }).then((response) => {
-        const { feed, err } = response.data;
-        if (err) {
-          console.error(`Error Refreshing Sources: ${err}`);
-        } else {
-          const { id, url } = this.props;
-          this.props.updateNewsContainerSources(id, url, feed, err);
-        }
-      });
+  titleChanged(prevProps, currentProps) {
+    return currentProps.title !== prevProps.title
+  }
+
+  urlChanged(prevProps, currentProps) {
+    return currentProps.url !== prevProps.url
   }
 
 
@@ -75,7 +71,8 @@ export class NewsContainer extends Component {
       deleteContainer,
       rearrangeContainer,
       toggleConfigureMode,
-      updateTitleForContainer
+      updateTitleForContainer,
+      auth
     } = this.props;
     return (
      <div className="news-container">
@@ -98,7 +95,7 @@ export class NewsContainer extends Component {
             <div>
               <IconButton
                 touch={true}
-                onTouchTap={() => rearrangeContainer(id, {left:true})}>
+                onTouchTap={() => rearrangeContainer(id, {left:true}, auth.idToken)}>
                 <LeftIcon />
               </IconButton>
             </div>
@@ -107,7 +104,7 @@ export class NewsContainer extends Component {
             <div>
               <IconButton
                 touch={true}
-                onTouchTap={() => rearrangeContainer(id, {right:true})}>
+                onTouchTap={() => rearrangeContainer(id, {right:true}, auth.idToken)}>
                 <RightIcon />
               </IconButton>
             </div>
@@ -121,7 +118,7 @@ export class NewsContainer extends Component {
 						}>
 						<MenuItem 
 							primaryText="Delete" 
-							onTouchTap={() => deleteContainer(id)} />
+							onTouchTap={() => deleteContainer(id, auth.idToken)} />
             <MenuItem
               primaryText="Configure"
               onTouchTap={() => {
@@ -139,7 +136,7 @@ export class NewsContainer extends Component {
           sliderStyle={{marginBottom:0, marginTop:0}}
           onDragStop={() => {
             refreshSource(this.props);
-            persistState(newsContainers)
+            persistState(newsContainers, auth.idToken)
           }}
           onChange={this.handleHeadlineSliderAdjust.bind(this)}
           value={maxHeadlines}

@@ -4,7 +4,6 @@ import { Provider } from 'react-redux';
 import configureStore from './configureStore.dev.js'
 import DevTools from './DevTools.js'
 import NewsStand from '../common/containers/NewsStand.js'
-import AddNewsContainer from '../common/containers/AddNewsContainer.js'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin()

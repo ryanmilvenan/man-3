@@ -24,6 +24,7 @@ module.exports = [{
     output: {
       path: PATHS.out,
       filename: '[name].bundle.js',
+      sourceMapFilename: "[name].bundle.js.map",
       publicPath: '/'
     },
     module: {
@@ -63,6 +64,8 @@ module.exports = [{
       }),
       new webpack.DefinePlugin({
         'API': JSON.stringify('http://localhost:3000'),
+        'AUTH0_DOMAIN': JSON.stringify('carnivalinparadise.auth0.com'),
+        'AUTH0_CLIENT_ID': JSON.stringify('vtMxr0t5RYIhNY8ZqEyRQbuTHiPqeShn'),
         'process.env': {
           'NODE_ENV': JSON.stringify('production'),
         }

@@ -6,7 +6,7 @@ import Drawer from 'material-ui/Drawer';
 import {Toolbar, ToolbarTitle} from 'material-ui/Toolbar';
 import MenuItem from 'material-ui/MenuItem';
 import DeveloperBoard from 'material-ui/svg-icons/hardware/developer-board';
-import AddNewsContainer from 'containers/AddNewsContainer.js'
+import AddNewsContainer from './AddNewsContainer.js'
 
 let SideMenu = ({ drawerOpen, sourcesExpanded, toggleSources }) => (
   <Drawer 

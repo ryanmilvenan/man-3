@@ -1,18 +1,31 @@
 import React from 'react';
 import { renderToString } from 'react-dom/server'
 import { Provider } from 'react-redux';
+import jwt from 'jsonwebtoken';
 import db from './lib/db/index.js';
 import NewsStand from './lib/db/schema/NewsStandSchema.js';
 import configureStore from '../common/store/configureStore.js'
 import Root from '../common/components/Root.js';
 
 export default function handleRender(req, res) {
+  console.log("COOKIES", req.cookies);
+  const secret = new Buffer('0Jf2Q60m7BvhJ6Zd8Bf55GanUZ1cqwi4ZcvPbYgOSxlp93kGXh0K8amu88gdrjze', 'base64')
 
   if (!db.connection.readyState) {
     db.mongoose.connect('mongodb://localhost/mangrove');
   }
 
-  NewsStand.fetchNewsContainers().then((newsContainers) => {
+  const idToken = req.cookies && req.cookies.id_token;
+
+  let data;
+  if(idToken)  {
+    const decoded = jwt.verify(idToken, secret);
+    data = {user: decoded.email};
+  } else {
+    data = {};
+  }
+
+  NewsStand.fetchNewsContainers(data).then((newsContainers) => {
     let state = {
       newsContainers
     };

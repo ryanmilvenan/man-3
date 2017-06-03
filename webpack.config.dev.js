@@ -60,7 +60,9 @@ module.exports = {
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({
-      'API': JSON.stringify('http://localhost:3000')
+      'API': JSON.stringify('http://localhost:3000'),
+      'AUTH0_DOMAIN': JSON.stringify('carnivalinparadise.auth0.com'),
+      'AUTH0_CLIENT_ID': JSON.stringify('vtMxr0t5RYIhNY8ZqEyRQbuTHiPqeShn')
     }),
     new ExtractTextPlugin('bundle.css'),
     new CopyWebpackPlugin([

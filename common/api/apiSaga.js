@@ -1,6 +1,6 @@
 import { call, put, takeEvery, takeLatest } from 'redux-saga/effects';
 import { NEWS_CONTAINER_ACTION_CREATORS, NEWS_STAND_ACTION_CREATORS } from 'reducers/news_container_reducer';
-import { ASYNC_ACTION_CREATORS } from 'reducers/news_container_reducer';
+import { ASYNC_ACTION_CREATORS } from 'reducers/async_reducer';
 import {
   PERSIST_STATE,
   FETCH_STATE,
@@ -22,6 +22,10 @@ const {
   fetchedSources
 } = NEWS_STAND_ACTION_CREATORS;
 
+const {
+  persistState: persistStateAction
+} = ASYNC_ACTION_CREATORS;
+
 
 function* refreshSource(action) {
   try {
@@ -37,37 +41,49 @@ function* refreshSource(action) {
 
 function* deleteSource(action) {
   try {
-    const { id } = action;
+    const { id, idToken } = action;
     yield put(updateNewsContainerIndices(id));
-    yield call(Api.deleteSource, id);
+    yield call(Api.deleteSource, id, idToken);
   } catch (e) {
     console.error(`Error deleting source:${e}`);
   }
 }
 
-
 function* rearrangeSources(action) {
   try {
-    const { id, direction } = action;
+    const { id, direction, idToken } = action;
     yield put(rearrangeNewsContainerIndices(id, direction));
-    yield call(Api.rearrangeSources, id, direction);
+    yield call(Api.rearrangeSources, id, direction, idToken);
   } catch (e) {
     console.error(`Error Rearranging Sources: ${e}`);
   }
 }
 
 function* persistState(action) {
-  const { state } = action;
-  yield call(Api.persistSource, state);
+  const { state, idToken } = action;
+  yield call(Api.persistSource, state, idToken);
 }
 
 function* fetchState(action) {
-  const state = yield call(Api.fetchState);
-  yield put(fetchedSources(state));
+  const { idToken } = action.auth;
+  let state;
+  if(idToken) {
+    state = yield call(Api.fetchStateFromCache);
+    if(!state) {
+      state = yield call(Api.fetchState, idToken);
+      yield put(fetchedSources(state));
+    } else {
+      yield put(fetchedSources(state));
+    }
+    console.log("STATE", state)
+  } else {
+    state = yield call(Api.fetchStateNoAuth);
+    console.log("NO AUTH STATE", state)
+    yield put(fetchedSources(state));
+  }
 }
 
-
-export default function* apiSaga() {
+export default function* watchApi() {
   yield takeEvery(REFRESH_SOURCE, refreshSource);
   yield takeEvery(DELETE_CONTAINER, deleteSource);
   yield takeEvery(REARRANGE_CONTAINER, rearrangeSources);
