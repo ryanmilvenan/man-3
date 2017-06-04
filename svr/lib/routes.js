@@ -43,6 +43,16 @@ routes.get('/default-state', (req, res) => {
   });
 });
 
+routes.post('/persist-default', (req, res) => {
+  const { state } = req.body;
+  const data = Object.assign({}, { newsContainers: state }, { user: 'default' });
+  NewsStand.persistState(data).then(() => {
+    res.sendStatus(200);
+  }).catch((err) => {
+    console.error(`ERROR PERSISTING STATE: ${err}`)
+  });
+});
+
 routes.post('/delete', jwtCheck, (req, res) => {
   const { email } = req.user;
   const { id } = req.body;

@@ -68,17 +68,19 @@ function* fetchState(action) {
   const { idToken } = action.auth;
   let state;
   if(idToken) {
-    state = yield call(Api.fetchStateFromCache);
+    if(typeof window !== 'undefined' && window.caches) {
+      state = yield call(Api.fetchStateFromCache);
+    }
     if(!state) {
       state = yield call(Api.fetchState, idToken);
       yield put(fetchedSources(state));
+      yield call(Api.persistSource, state, idToken);
     } else {
       yield put(fetchedSources(state));
     }
-    console.log("STATE", state)
   } else {
     state = yield call(Api.fetchStateNoAuth);
-    console.log("NO AUTH STATE", state)
+    yield call(Api.persistSourceDefault, state);
     yield put(fetchedSources(state));
   }
 }
