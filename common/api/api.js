@@ -52,14 +52,21 @@ export default class Api {
         'Authorization': `Bearer ${idToken}`
       }
     })
-    .then(response => response.json())
+    .then(response => {
+      if(response.ok) {
+        return response.json()
+      } else {
+        return { data: { err: response.status } }
+      }
+    })
     .then((response) => {
       const { state, err } = response.data;
       if (err) {
-        console.error(`Error Fetching Sources: ${err}`);
+        //console.error(`Error Fetching Sources: ${err}`);
+        return { err }
       }
       return state;
-    });
+    })
   }
 
   static fetchStateNoAuth() {

@@ -74,15 +74,14 @@ const renderFullPage = (html, preloadedState) => {
         <script>
           window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState).replace(/</g, '\\x3c')}
         </script>
-        <script src="/vendor.bundle.js"></script>
-        <script src="/client.bundle.js"></script>
         <script>
           if('serviceWorker' in navigator) {
             navigator.serviceWorker
               .register('/sw.js')
-              .then(function() { console.log("Service Worker Registered"); });
           }
         </script>
+        <script src="/vendor.bundle.js"></script>
+        <script src="/client.bundle.js"></script>
       </body>
     </html>
     `

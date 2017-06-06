@@ -43,13 +43,23 @@ routes.get('/default-state', (req, res) => {
   });
 });
 
-routes.post('/persist-default', (req, res) => {
+routes.post('/persist-default', async (req, res) => {
   const { state } = req.body;
-  const data = Object.assign({}, { newsContainers: state }, { user: 'default' });
-  NewsStand.persistState(data).then(() => {
+  const processedState = await Promise.all(state.map(async (container) => {
+    const feed = await reader.parse(container.url);
+    feed.entries = processEntries(feed.entries);
+    return {
+      ...container,
+      loading: false,
+      items: feed.entries.slice(0, container.maxHeadlines),
+      allItems: feed.entries
+    }
+  }));
+  const data = Object.assign({}, { newsContainers: processedState });
+  NewsStand.persistDefaultState(data).then(() => {
     res.sendStatus(200);
   }).catch((err) => {
-    console.error(`ERROR PERSISTING STATE: ${err}`)
+    console.error(`ERROR PERSISTING DEFAULT STATE: ${err}`)
   });
 });
 
