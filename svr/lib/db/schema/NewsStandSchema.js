@@ -31,6 +31,15 @@ newsStandSchema.statics.persistState = async (data) => {
   }
 }
 
+newsStandSchema.statics.persistDefaultState = async (data) => {
+  const { newsContainers } = data;
+  try {
+    return await NewsStand.update({ user: 'default'}, { newsContainers });
+  } catch (err) {
+    console.error(`ERROR UPDATING SOURCES DURING PERSIST DEFAULT: ${err}`)
+  }
+}
+
 newsStandSchema.statics.fetchNewsContainers = async (data) => {
   const forAccount = data.user ? { user: data.user } : { user: 'default'};
   let docs, containers;

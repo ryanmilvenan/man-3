@@ -109,22 +109,24 @@ export class NewsContainer extends Component {
               </IconButton>
             </div>
           }
-					<IconMenu
-						iconButtonElement={
-							<IconButton 
-								touch={true}>
-								<MenuIcon />
-							</IconButton>
-						}>
-						<MenuItem 
-							primaryText="Delete" 
-							onTouchTap={() => deleteContainer(id, auth.idToken)} />
-            <MenuItem
-              primaryText="Configure"
-              onTouchTap={() => {
-                toggleConfigureMode(id);
-              }}/>
-					</IconMenu>
+          {auth.idToken && 
+            <IconMenu
+              iconButtonElement={
+                <IconButton 
+                  touch={true}>
+                  <MenuIcon />
+                </IconButton>
+              }>
+              <MenuItem 
+                primaryText="Delete" 
+                onTouchTap={() => deleteContainer(id, auth.idToken)} />
+              <MenuItem
+                primaryText="Configure"
+                onTouchTap={() => {
+                  toggleConfigureMode(id);
+                }}/>
+            </IconMenu>
+          }
         </ToolbarGroup>
       </Toolbar>
       {configureMode &&

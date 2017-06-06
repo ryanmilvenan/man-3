@@ -20,7 +20,18 @@ export default class Api {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${idToken}` 
       },
-      body: JSON.stringify({ state })
+      body: JSON.stringify({ state }),
+    });
+  }
+
+  static persistSourceDefault(state) {
+    return fetch(API + `/persist-default`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ state }),
     });
   }
 
@@ -38,18 +49,24 @@ export default class Api {
       headers: {
         'Accept': 'application/json, text/plain, */*',
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${idToken}` 
+        'Authorization': `Bearer ${idToken}`
       }
     })
-    .then(response => response.json())
+    .then(response => {
+      if(response.ok) {
+        return response.json()
+      } else {
+        return { data: { err: response.status } }
+      }
+    })
     .then((response) => {
       const { state, err } = response.data;
       if (err) {
-        console.error(`Error Fetching Sources: ${err}`);
+        //console.error(`Error Fetching Sources: ${err}`);
+        return { err }
       }
-      console.log("REMOTE FETCH", state)
       return state;
-    });
+    })
   }
 
   static fetchStateNoAuth() {

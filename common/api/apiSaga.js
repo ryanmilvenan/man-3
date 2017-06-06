@@ -1,6 +1,7 @@
 import { call, put, takeEvery, takeLatest } from 'redux-saga/effects';
 import { NEWS_CONTAINER_ACTION_CREATORS, NEWS_STAND_ACTION_CREATORS } from 'reducers/news_container_reducer';
 import { ASYNC_ACTION_CREATORS } from 'reducers/async_reducer';
+import { AUTH_ACTION_CREATORS } from 'reducers/auth_reducer';
 import {
   PERSIST_STATE,
   FETCH_STATE,
@@ -25,6 +26,10 @@ const {
 const {
   persistState: persistStateAction
 } = ASYNC_ACTION_CREATORS;
+
+const {
+  logout
+} = AUTH_ACTION_CREATORS;
 
 
 function* refreshSource(action) {
@@ -68,17 +73,23 @@ function* fetchState(action) {
   const { idToken } = action.auth;
   let state;
   if(idToken) {
-    state = yield call(Api.fetchStateFromCache);
+    if(typeof window !== 'undefined' && window.caches) {
+      state = yield call(Api.fetchStateFromCache);
+    }
     if(!state) {
       state = yield call(Api.fetchState, idToken);
-      yield put(fetchedSources(state));
+      if(!state.err) {
+        yield put(fetchedSources(state));
+        yield call(Api.persistSource, state, idToken);
+      } else {
+        yield put(logout());
+      }
     } else {
       yield put(fetchedSources(state));
     }
-    console.log("STATE", state)
   } else {
     state = yield call(Api.fetchStateNoAuth);
-    console.log("NO AUTH STATE", state)
+    yield call(Api.persistSourceDefault, state);
     yield put(fetchedSources(state));
   }
 }

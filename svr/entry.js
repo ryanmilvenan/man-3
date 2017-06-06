@@ -8,7 +8,6 @@ import configureStore from '../common/store/configureStore.js'
 import Root from '../common/components/Root.js';
 
 export default function handleRender(req, res) {
-  console.log("COOKIES", req.cookies);
   const secret = new Buffer('0Jf2Q60m7BvhJ6Zd8Bf55GanUZ1cqwi4ZcvPbYgOSxlp93kGXh0K8amu88gdrjze', 'base64')
 
   if (!db.connection.readyState) {
@@ -16,11 +15,18 @@ export default function handleRender(req, res) {
   }
 
   const idToken = req.cookies && req.cookies.id_token;
+  const profile = req.cookies && req.cookies.profile;
 
-  let data;
-  if(idToken)  {
-    const decoded = jwt.verify(idToken, secret);
-    data = {user: decoded.email};
+  let data, verifyError;
+  if(idToken) {
+    try{
+      const decoded = jwt.verify(idToken, secret);
+      data = {user: decoded.email};
+    } catch(e) {
+      console.log("JWT ERROR")
+      data = {}
+      verifyError = e;
+    }
   } else {
     data = {};
   }
@@ -32,6 +38,10 @@ export default function handleRender(req, res) {
 
     const store = configureStore(state)
     const preloadedState = store.getState();
+    if(idToken && !verifyError) {
+      preloadedState.auth.idToken = idToken;
+      preloadedState.auth.profile = profile;
+    }
 
     const html = renderToString( <
       Root store = { store }
@@ -64,15 +74,14 @@ const renderFullPage = (html, preloadedState) => {
         <script>
           window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState).replace(/</g, '\\x3c')}
         </script>
-        <script src="/vendor.bundle.js"></script>
-        <script src="/client.bundle.js"></script>
         <script>
           if('serviceWorker' in navigator) {
             navigator.serviceWorker
               .register('/sw.js')
-              .then(function() { console.log("Service Worker Registered"); });
           }
         </script>
+        <script src="/vendor.bundle.js"></script>
+        <script src="/client.bundle.js"></script>
       </body>
     </html>
     `
