@@ -6,6 +6,7 @@
   "scripts": {
     "test": "jest",
     "build": "webpack -p --config webpack.config.prod.js",
+    "admin": "AUTHORIZATION='admin' npm run prod",
     "prod": "concurrently \"mongod --dbpath ./mongodb --logpath ./mongodb/logs/logs.prod\" \"npm run build && NODE_ENV='production' node svr/index.js\"",
     "start": "concurrently \"mongod --dbpath ./mongodb --logpath ./mongodb/logs/logs.dev\" \"nodemon --watch svr svr/index.js\"",
     "debug": "node debug svr/index.js",
